@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function AddContactScreen({ onBack, onAdded }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [focused, setFocused] = useState("");
+  const yesRef = useRef(null);
+
+  useEffect(() => {
+    if (showConfirm && yesRef.current) yesRef.current.focus();
+  }, [showConfirm]);
 
   const inputStyle = (field) => ({
     width: "100%", height: 58, borderRadius: 14,
@@ -59,13 +64,24 @@ export default function AddContactScreen({ onBack, onAdded }) {
 
       {/* Confirm modal */}
       {showConfirm && (
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
+        <div role="dialog" aria-modal="true" aria-label="Add contact confirmation" style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
           <div style={{ background: "white", borderRadius: 24, padding: "28px 24px", width: "80%", textAlign: "center" }}>
             <p style={{ fontSize: 19, fontWeight: 700, color: "#2D1B69", marginBottom: 8, fontFamily: "system-ui, sans-serif" }}>Add new contact</p>
             <p style={{ fontSize: 15, color: "#666", marginBottom: 24, fontFamily: "system-ui, sans-serif" }}>Add <strong>{name}</strong> to your contacts?</p>
             <div style={{ display: "flex", gap: 12 }}>
-              <button onClick={() => setShowConfirm(false)} style={{ flex: 1, height: 52, borderRadius: 14, background: "#888", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>CANCEL</button>
-              <button onClick={() => { setShowConfirm(false); onAdded && onAdded(); }} style={{ flex: 1, height: 52, borderRadius: 14, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>YES</button>
+              <button aria-label="Cancel add contact" onClick={() => setShowConfirm(false)} style={{ flex: 1, height: 52, borderRadius: 14, background: "#888", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>CANCEL</button>
+              <button aria-label="Confirm add contact" ref={yesRef} onClick={() => {
+                const newContact = {
+                  id: Date.now(),
+                  name,
+                  phone,
+                  avatar: "👤",
+                  color: "#D0C0F0",
+                  unread: 0,
+                };
+                setShowConfirm(false);
+                onAdded && onAdded(newContact);
+              }} style={{ flex: 1, height: 52, borderRadius: 14, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>YES</button>
             </div>
           </div>
         </div>

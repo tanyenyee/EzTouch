@@ -1,4 +1,5 @@
-const contacts = {
+// Use `contacts` prop supplied by the app; fall back to defaults
+const defaultContacts = {
   recent: [
     { id: 1, name: "Boyfriend", avatar: "🧍", unread: 5, color: "#C4A882" },
   ],
@@ -12,6 +13,7 @@ const contacts = {
 function ContactRow({ contact, onClick }) {
   return (
     <button
+      aria-label={`Open chat with ${contact.name}`}
       onClick={() => onClick(contact)}
       style={{
         display: "flex",
@@ -79,7 +81,7 @@ function ContactRow({ contact, onClick }) {
   );
 }
 
-export default function ChatList({ onBack, onOpenChat }) {
+export default function ChatList({ onBack, onOpenChat, contacts = defaultContacts, onAddContact }) {
   return (
     <div style={{
       width: "100%",
@@ -98,7 +100,7 @@ export default function ChatList({ onBack, onOpenChat }) {
         borderBottom: "1px solid #E8E0F8",
         flexShrink: 0,
       }}>
-        <button onClick={onBack} style={{
+        <button aria-label="Back" onClick={onBack} style={{
           background: "none",
           border: "none",
           fontSize: 28,
@@ -144,7 +146,7 @@ export default function ChatList({ onBack, onOpenChat }) {
       </div>
 
       {/* Add contact FAB */}
-      <button style={{
+      <button aria-label="Add contact" onClick={() => onAddContact && onAddContact()} style={{
         position: "absolute",
         bottom: 36,
         right: 32,

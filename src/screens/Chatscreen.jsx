@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const mockMessages = [
   { id: 1, text: "Hey! Are you free today?", mine: false },
@@ -40,25 +40,101 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
     setUndoMsg(null);
   };
 
+  // Speech recognition (Web Speech API) integration with graceful fallback
+  const recognitionRef = useRef(null);
+
   const startRecording = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      // fallback to simulated short recording
+      setRecording(true);
+      const iv = setInterval(() => setPulse(p => !p), 500);
+      setTimeout(() => {
+        clearInterval(iv);
+        setRecording(false);
+        setMode("voiceConfirm");
+      }, 2000);
+      return;
+    }
+
+    // create recognition instance
+    const recog = new SpeechRecognition();
+    recognitionRef.current = recog;
+    recog.lang = navigator.language || 'en-US';
+    recog.interimResults = true;
+    recog.maxAlternatives = 1;
+
+    let interim = '';
+    setTranscribed('');
     setRecording(true);
-    const iv = setInterval(() => setPulse(p => !p), 500);
-    setTimeout(() => {
-      clearInterval(iv);
+    setPulse(true);
+
+    recog.onresult = (event) => {
+      let finalTranscript = '';
+      interim = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        const res = event.results[i];
+        if (res.isFinal) finalTranscript += res[0].transcript;
+        else interim += res[0].transcript;
+      }
+      setTranscribed((prev) => (finalTranscript || interim) || prev);
+    };
+
+    recog.onerror = (err) => {
+      console.warn('Speech recognition error', err);
       setRecording(false);
-      setMode("voiceConfirm");
-    }, 2000);
+      setPulse(false);
+      // fallback to confirm view
+      setMode('voiceConfirm');
+    };
+
+    recog.onend = () => {
+      setRecording(false);
+      setPulse(false);
+      // move to confirm when recognition ends
+      setMode('voiceConfirm');
+    };
+
+    try {
+      recog.start();
+    } catch (e) {
+      console.warn('Recognition start failed', e);
+      setRecording(false);
+      setMode('voiceConfirm');
+    }
   };
+
+  const stopRecording = () => {
+    const recog = recognitionRef.current;
+    if (recog && recog.stop) {
+      try { recog.stop(); } catch (e) { /* ignore */ }
+    }
+    setRecording(false);
+    setPulse(false);
+    setMode('voiceConfirm');
+  };
+
+  const yesCallRef = useRef(null);
+
+  useEffect(() => {
+    if (mode === "callConfirm" && yesCallRef.current) {
+      yesCallRef.current.focus();
+    }
+  }, [mode]);
+
+  useEffect(() => {
+    return () => {};
+  }, []);
 
   return (
     <div style={{ width: "100%", height: "100%", background: "#F4F0FF", display: "flex", flexDirection: "column", position: "relative" }}>
 
       {/* Header */}
       <div style={{ background: "white", padding: "48px 20px 14px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid #E8E0F8", flexShrink: 0 }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", fontSize: 26, cursor: "pointer", color: "#6B3FA0", padding: 4 }}>←</button>
+        <button aria-label="Back" onClick={onBack} style={{ background: "none", border: "none", fontSize: 26, cursor: "pointer", color: "#6B3FA0", padding: 4 }}>←</button>
         <div style={{ width: 46, height: 46, borderRadius: 23, background: avatarColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{avatar}</div>
         <span style={{ flex: 1, fontSize: 20, fontWeight: 700, color: "#2D1B69", fontFamily: "system-ui, sans-serif" }}>{name}</span>
-        <button onClick={() => setMode("callConfirm")} style={{ background: "none", border: "none", fontSize: 26, cursor: "pointer", color: "#6B3FA0" }}>📞</button>
+        <button aria-label="Call contact" onClick={() => setMode("callConfirm")} style={{ background: "none", border: "none", fontSize: 26, cursor: "pointer", color: "#6B3FA0" }}>📞</button>
       </div>
 
       {/* Messages */}
@@ -96,9 +172,23 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
               </button>
             </div>
             <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
-              <textarea value={input} onChange={e => setInput(e.target.value)} placeholder="Type a message..." rows={2}
+              <textarea
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    if (input.trim()) { setTranscribed(input); setMode("voiceConfirm"); }
+                  }
+                  if (e.key === "Escape") {
+                    setInput("");
+                    setMode("main");
+                  }
+                }}
+                aria-label="Message input"
+                placeholder="Type a message..." rows={2}
                 style={{ flex: 1, borderRadius: 14, border: "2px solid #D0B8F5", padding: "10px 14px", fontSize: 15, resize: "none", fontFamily: "system-ui, sans-serif", outline: "none", background: "#F5F0FF", color: "#2D1B69" }} />
-              <button onClick={() => { if (input.trim()) { setTranscribed(input); setMode("voiceConfirm"); } }}
+              <button aria-label="Send message" onClick={() => { if (input.trim()) { setTranscribed(input); setMode("voiceConfirm"); } }}
                 style={{ width: 52, height: 52, borderRadius: 26, background: "linear-gradient(135deg, #6B3FA0, #8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>➤</button>
             </div>
           </>
@@ -108,8 +198,8 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
         {mode === "voiceRecord" && (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, padding: "8px 0" }}>
             <span style={{ fontSize: 14, color: "#6B3FA0", fontWeight: 600, fontFamily: "system-ui, sans-serif" }}>↩ Voice Message</span>
-            <button onClick={() => setMode("voiceConfirm")} style={{ width: 80, height: 80, borderRadius: 40, background: "linear-gradient(135deg, #F5A06A, #E87030)", border: "none", cursor: "pointer", fontSize: 36, boxShadow: "0 0 0 12px rgba(245,160,106,0.2)" }}>🎙️</button>
-            <p style={{ fontSize: 15, color: "#E87030", fontWeight: 600, fontFamily: "system-ui, sans-serif", margin: 0 }}>listening...</p>
+            <button onClick={() => { if (recording) stopRecording(); else startRecording(); }} style={{ width: 80, height: 80, borderRadius: 40, background: "linear-gradient(135deg, #F5A06A, #E87030)", border: "none", cursor: "pointer", fontSize: 36, boxShadow: recording ? "0 0 0 12px rgba(245,160,106,0.2)" : "0 6px 20px rgba(245,160,106,0.4)" }}>{recording ? '🔴' : '🎙️'}</button>
+            <p style={{ fontSize: 15, color: "#E87030", fontWeight: 600, fontFamily: "system-ui, sans-serif", margin: 0 }}>{recording ? 'listening...' : 'Tap to start recording'}</p>
             <div style={{ width: "100%", background: "#F5F0FF", borderRadius: 12, border: "1px solid #D0B8F5", padding: "10px 14px", fontSize: 15, color: "#2D1B69", fontFamily: "system-ui, sans-serif", minHeight: 44 }}>{transcribed}</div>
           </div>
         )}
@@ -148,16 +238,18 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
 
       {/* Call confirmation modal */}
       {mode === "callConfirm" && (
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
+        <div role="dialog" aria-modal="true" aria-label={`Call ${name} confirmation`} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
           <div style={{ background: "white", borderRadius: 24, padding: "28px 24px", width: "80%", textAlign: "center" }}>
             <p style={{ fontSize: 20, fontWeight: 700, color: "#2D1B69", marginBottom: 20, fontFamily: "system-ui, sans-serif" }}>Call {name}?</p>
             <div style={{ display: "flex", gap: 12 }}>
-              <button onClick={() => setMode("main")} style={{ flex: 1, height: 52, borderRadius: 14, background: "#888", color: "white", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>CANCEL</button>
-              <button onClick={() => onCall(contact)} style={{ flex: 1, height: 52, borderRadius: 14, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>YES</button>
+              <button aria-label="Cancel call" onClick={() => setMode("main")} style={{ flex: 1, height: 52, borderRadius: 14, background: "#888", color: "white", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>CANCEL</button>
+              <button aria-label="Confirm call" ref={yesCallRef} onClick={() => onCall(contact)} style={{ flex: 1, height: 52, borderRadius: 14, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>YES</button>
             </div>
           </div>
         </div>
       )}
+
+      {/* toast removed per user request */}
     </div>
   );
 }

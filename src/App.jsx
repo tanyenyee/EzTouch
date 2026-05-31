@@ -25,6 +25,16 @@ export default function App() {
   const [selectedContact, setSelectedContact] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [postText, setPostText] = useState("");
+  const [contacts, setContacts] = useState({
+    recent: [
+      { id: 1, name: "Boyfriend", avatar: "🧍", unread: 5, color: "#C4A882" },
+    ],
+    others: [
+      { id: 2, name: "Mummy", avatar: "👩", unread: 9, color: "#E8A0A0" },
+      { id: 3, name: "Xiao Mei", avatar: "👧", unread: 0, color: "#F0C0B0" },
+      { id: 4, name: "Alice", avatar: "👱‍♀️", unread: 0, color: "#A0C8A0" },
+    ],
+  });
 
   const go = (s) => setScreen(s);
 
@@ -41,10 +51,27 @@ export default function App() {
         )}
 
         {/* ── Chat Module ── */}
-        {screen === "chatlist" && <ChatList onBack={() => go("home")} onOpenChat={(c) => { setSelectedContact(c); go("chat"); }} onAddContact={() => go("addcontact")} />}
+        {screen === "chatlist" && (
+          <ChatList
+            contacts={contacts}
+            onBack={() => go("home")}
+            onOpenChat={(c) => { setSelectedContact(c); go("chat"); }}
+            onAddContact={() => go("addcontact")}
+          />
+        )}
         {screen === "chat" && <ChatScreen contact={selectedContact} onBack={() => go("chatlist")} onCall={(c) => { setSelectedContact(c); go("calling"); }} />}
         {screen === "calling" && <CallingScreen contact={selectedContact} onCancel={() => go("chat")} />}
-        {screen === "addcontact" && <AddContactScreen onBack={() => go("chatlist")} onAdded={() => go("chatlist")} />}
+        {screen === "addcontact" && (
+          <AddContactScreen
+            onBack={() => go("chatlist")}
+            onAdded={(newContact) => {
+              if (newContact) {
+                setContacts(prev => ({ ...prev, recent: [newContact, ...(prev.recent || [])] }));
+              }
+              go("chatlist");
+            }}
+          />
+        )}
 
         {/* ── Community Module ── */}
         {screen === "community" && <CommunityScreen onBack={() => go("home")} onCreatePost={() => go("createpost")} onJoinGroup={() => go("joingroup")} onOpenGroup={(g) => { setSelectedGroup(g); go("groupchat"); }} />}
