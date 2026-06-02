@@ -1,5 +1,6 @@
 import { useState } from "react";
 import SplashScreen from "./screens/SplashScreen";
+import { FaCat, FaGraduationCap, FaHandsHelping, FaBook, FaUser } from "react-icons/fa";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import HomeDashboard from "./screens/HomeDashboard";
@@ -27,21 +28,21 @@ export default function App() {
   const [postText, setPostText] = useState("");
   const [communityTab, setCommunityTab] = useState("discover");
   const [myGroups, setMyGroups] = useState([
-    { id: 1, name: "Pet Lovers", avatar: "🐱", color: "#C8A0E8", unread: 67, members: 312 },
-    { id: 2, name: "University Malaya", avatar: "🎓", color: "#E8C0A0", unread: 20, members: 850 },
-    { id: 3, name: "Helping Each Other", avatar: "🤝", color: "#F5A0A0", unread: 0, members: 428 },
-    { id: 4, name: "Class 2025", avatar: "📚", color: "#A0D0E8", unread: 0, members: 65 },
+    { id: 1, name: "Pet Lovers", avatar: <FaCat />, color: "#C8A0E8", unread: 67, members: 312 },
+    { id: 2, name: "University Malaya", avatar: <FaGraduationCap />, color: "#E8C0A0", unread: 20, members: 850 },
+    { id: 3, name: "Helping Each Other", avatar: <FaHandsHelping />, color: "#F5A0A0", unread: 0, members: 428 },
+    { id: 4, name: "Class 2025", avatar: <FaBook />, color: "#A0D0E8", unread: 0, members: 65 },
   ]);
 
   const leaveGroup = (groupId) => setMyGroups(prev => prev.filter(g => g.id !== groupId));
   const [contacts, setContacts] = useState({
     recent: [
-      { id: 1, name: "Boyfriend", avatar: "🧍", unread: 5, color: "#C4A882" },
+      { id: 1, name: "Boyfriend", avatar: <FaUser />, unread: 5, color: "#C4A882" },
     ],
     others: [
-      { id: 2, name: "Mummy", avatar: "👩", unread: 9, color: "#E8A0A0" },
-      { id: 3, name: "Xiao Mei", avatar: "👧", unread: 0, color: "#F0C0B0" },
-      { id: 4, name: "Alice", avatar: "👱‍♀️", unread: 0, color: "#A0C8A0" },
+      { id: 2, name: "Mummy", avatar: <FaUser />, unread: 9, color: "#E8A0A0" },
+      { id: 3, name: "Xiao Mei", avatar: <FaUser />, unread: 0, color: "#F0C0B0" },
+      { id: 4, name: "Alice", avatar: <FaUser />, unread: 0, color: "#A0C8A0" },
     ],
   });
 

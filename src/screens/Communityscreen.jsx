@@ -1,44 +1,45 @@
 import { useState } from "react";
+import { FaArrowLeft, FaGlobeAmericas, FaUsers, FaHeart, FaRegHeart, FaComment, FaShare, FaUser, FaPaperPlane, FaChevronRight, FaPlus, FaArrowRight, FaCheckCircle } from "react-icons/fa";
 
 const initPosts = [
   {
-    id: 1, user: "Anna", avatar: "👩", color: "#E8A0A0",
+    id: 1, user: "Anna", avatar: <FaUser />, color: "#E8A0A0",
     text: "Had a great day with my therapy session! Feeling so much stronger 💪",
     likes: 12, time: "2 hrs ago",
     commentsList: [
-      { id: 1, user: "Ravi", avatar: "👨", color: "#A0C8E8", text: "That's amazing, keep it up! 💪", time: "1 hr ago" },
-      { id: 2, user: "Mei Lin", avatar: "👧", color: "#F0C0B0", text: "So proud of you Anna! 🥰", time: "45 mins ago" },
-      { id: 3, user: "David", avatar: "🧑", color: "#A0D0A0", text: "Therapy really does wonders!", time: "30 mins ago" },
+      { id: 1, user: "Ravi", avatar: <FaUser />, color: "#A0C8E8", text: "That's amazing, keep it up! 💪", time: "1 hr ago" },
+      { id: 2, user: "Mei Lin", avatar: <FaUser />, color: "#F0C0B0", text: "So proud of you Anna! 🥰", time: "45 mins ago" },
+      { id: 3, user: "David", avatar: <FaUser />, color: "#A0D0A0", text: "Therapy really does wonders!", time: "30 mins ago" },
     ],
   },
   {
-    id: 2, user: "Ravi", avatar: "👨", color: "#A0C8E8",
+    id: 2, user: "Ravi", avatar: <FaUser />, color: "#A0C8E8",
     text: "Anyone else use voice typing? It completely changed my life! EzTouch makes it so easy 🎙️",
     likes: 28, time: "4 hrs ago",
     commentsList: [
-      { id: 1, user: "Anna", avatar: "👩", color: "#E8A0A0", text: "YES! Voice typing is a lifesaver 🙌", time: "3 hrs ago" },
-      { id: 2, user: "David", avatar: "🧑", color: "#A0D0A0", text: "I use it every day now, no more struggle!", time: "2 hrs ago" },
-      { id: 3, user: "Sara", avatar: "👱‍♀️", color: "#C8A0E8", text: "The accuracy is surprisingly good too 😊", time: "2 hrs ago" },
-      { id: 4, user: "Mei Lin", avatar: "👧", color: "#F0C0B0", text: "Same here! My hand cramps a lot less now 💯", time: "1 hr ago" },
+      { id: 1, user: "Anna", avatar: <FaUser />, color: "#E8A0A0", text: "YES! Voice typing is a lifesaver 🙌", time: "3 hrs ago" },
+      { id: 2, user: "David", avatar: <FaUser />, color: "#A0D0A0", text: "I use it every day now, no more struggle!", time: "2 hrs ago" },
+      { id: 3, user: "Sara", avatar: <FaUser />, color: "#C8A0E8", text: "The accuracy is surprisingly good too 😊", time: "2 hrs ago" },
+      { id: 4, user: "Mei Lin", avatar: <FaUser />, color: "#F0C0B0", text: "Same here! My hand cramps a lot less now 💯", time: "1 hr ago" },
     ],
   },
   {
-    id: 3, user: "Mei Lin", avatar: "👧", color: "#F0C0B0",
+    id: 3, user: "Mei Lin", avatar: <FaUser />, color: "#F0C0B0",
     text: "Just joined the Hand Recovery Support group. So glad I found this community! 🤝",
     likes: 34, time: "Yesterday",
     commentsList: [
-      { id: 1, user: "Anna", avatar: "👩", color: "#E8A0A0", text: "Welcome! You're in the right place 💜", time: "Yesterday" },
-      { id: 2, user: "Ravi", avatar: "👨", color: "#A0C8E8", text: "This community is incredibly supportive!", time: "Yesterday" },
+      { id: 1, user: "Anna", avatar: <FaUser />, color: "#E8A0A0", text: "Welcome! You're in the right place 💜", time: "Yesterday" },
+      { id: 2, user: "Ravi", avatar: <FaUser />, color: "#A0C8E8", text: "This community is incredibly supportive!", time: "Yesterday" },
     ],
   },
   {
-    id: 4, user: "David", avatar: "🧑", color: "#A0D0A0",
+    id: 4, user: "David", avatar: <FaUser />, color: "#A0D0A0",
     text: "Tip for tremor users: use the large button mode in Settings! It helps so much with accidental taps 👍",
     likes: 51, time: "2 days ago",
     commentsList: [
-      { id: 1, user: "Mei Lin", avatar: "👧", color: "#F0C0B0", text: "Oh wow, I didn't know about this! Trying it now 😊", time: "2 days ago" },
-      { id: 2, user: "Sara", avatar: "👱‍♀️", color: "#C8A0E8", text: "Game changer tip!! Thank you David 🙏", time: "2 days ago" },
-      { id: 3, user: "Anna", avatar: "👩", color: "#E8A0A0", text: "Also the confirmation mode in Settings helps a lot with accidental sends!", time: "1 day ago" },
+      { id: 1, user: "Mei Lin", avatar: <FaUser />, color: "#F0C0B0", text: "Oh wow, I didn't know about this! Trying it now 😊", time: "2 days ago" },
+      { id: 2, user: "Sara", avatar: <FaUser />, color: "#C8A0E8", text: "Game changer tip!! Thank you David 🙏", time: "2 days ago" },
+      { id: 3, user: "Anna", avatar: <FaUser />, color: "#E8A0A0", text: "Also the confirmation mode in Settings helps a lot with accidental sends!", time: "1 day ago" },
     ],
   },
 ];
@@ -47,10 +48,10 @@ const initPosts = [
 
 // Contacts from the chat module (mirrors App.jsx contacts)
 const SHARE_CONTACTS = [
-  { id: 1, name: "Boyfriend", avatar: "🧍", color: "#C4A882" },
-  { id: 2, name: "Mummy", avatar: "👩", color: "#E8A0A0" },
-  { id: 3, name: "Xiao Mei", avatar: "👧", color: "#F0C0B0" },
-  { id: 4, name: "Alice", avatar: "👱‍♀️", color: "#A0C8A0" },
+  { id: 1, name: "Boyfriend", avatar: <FaUser />, color: "#C4A882" },
+  { id: 2, name: "Mummy", avatar: <FaUser />, color: "#E8A0A0" },
+  { id: 3, name: "Xiao Mei", avatar: <FaUser />, color: "#F0C0B0" },
+  { id: 4, name: "Alice", avatar: <FaUser />, color: "#A0C8A0" },
 ];
 
 export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onOpenGroup, defaultTab = "discover", myGroups = [] }) {
@@ -74,7 +75,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
     const newComment = {
       id: Date.now(),
       user: "You",
-      avatar: "👤",
+      avatar: <FaUser />,
       color: "#D0C0F0",
       text: commentText.trim(),
       time: "Just now",
@@ -101,8 +102,8 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
         <button
           aria-label="Back"
           onClick={onBack}
-          style={{ background: "none", border: "none", fontSize: 26, cursor: "pointer", color: "#6B3FA0", padding: "8px 12px", minWidth: 44, minHeight: 44 }}
-        >←</button>
+          style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#6B3FA0", padding: "8px 12px", minWidth: 44, minHeight: 44 }}
+        ><FaArrowLeft /></button>
         <h1 style={{ fontSize: 26, fontWeight: 700, color: "#6B3FA0", margin: 0, fontFamily: "system-ui, sans-serif", flex: 1 }}>Community</h1>
       </div>
 
@@ -117,8 +118,9 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
             fontSize: 16, fontWeight: 700, cursor: "pointer",
             fontFamily: "system-ui, sans-serif", transition: "all 0.2s",
             boxShadow: tab === t ? "0 4px 12px rgba(107,63,160,0.25)" : "none",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: "8px"
           }}>
-            {t === "discover" ? "🌍 Discover" : "👥 My Groups"}
+            {t === "discover" ? <><FaGlobeAmericas /> Discover</> : <><FaUsers /> My Groups</>}
           </button>
         ))}
       </div>
@@ -161,7 +163,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
                     transition: "all 0.2s",
                   }}
                 >
-                  <span style={{ fontSize: 20 }}>{liked[post.id] ? "❤️" : "🤍"}</span>
+                  <span style={{ fontSize: 18, display: "flex" }}>{liked[post.id] ? <FaHeart color="#E83030" /> : <FaRegHeart color="#888" />}</span>
                   <span style={{ fontSize: 14, fontWeight: 700, color: liked[post.id] ? "#6B3FA0" : "#888", fontFamily: "system-ui, sans-serif" }}>{post.likes}</span>
                 </button>
 
@@ -176,7 +178,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
                     transition: "all 0.2s",
                   }}
                 >
-                  <span style={{ fontSize: 20 }}>💬</span>
+                  <span style={{ fontSize: 18, color: commenting === post.id ? "#6B3FA0" : "#888", display: "flex" }}><FaComment /></span>
                   <span style={{ fontSize: 14, fontWeight: 700, color: commenting === post.id ? "#6B3FA0" : "#888", fontFamily: "system-ui, sans-serif" }}>
                     {(post.commentsList || []).length}
                   </span>
@@ -193,7 +195,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
                     transition: "all 0.2s",
                   }}
                 >
-                  <span style={{ fontSize: 20 }}>↗️</span>
+                  <span style={{ fontSize: 18, color: "#888", display: "flex" }}><FaShare /></span>
                   <span style={{ fontSize: 14, fontWeight: 700, color: "#888", fontFamily: "system-ui, sans-serif" }}>Share</span>
                 </button>
               </div>
@@ -220,7 +222,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
                   )}
                   {/* New comment input */}
                   <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
-                    <div style={{ width: 34, height: 34, borderRadius: 17, background: "#D0C0F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>👤</div>
+                    <div style={{ width: 34, height: 34, borderRadius: 17, background: "#D0C0F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0, color: "white" }}><FaUser /></div>
                     <textarea
                       value={commentText}
                       onChange={e => setCommentText(e.target.value)}
@@ -230,8 +232,8 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
                     />
                     <button
                       onClick={() => submitComment(post.id)}
-                      style={{ width: 48, height: 48, borderRadius: 24, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
-                    >➤</button>
+                      style={{ width: 48, height: 48, borderRadius: 24, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
+                    ><FaPaperPlane style={{ marginLeft: "-2px" }} /></button>
                   </div>
                 </div>
               )}
@@ -263,7 +265,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
               onTouchStart={e => e.currentTarget.style.transform = "scale(0.98)"}
               onTouchEnd={e => e.currentTarget.style.transform = "scale(1)"}
             >
-              <div style={{ width: 58, height: 58, borderRadius: 29, background: group.color + "33", border: `2px solid ${group.color}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0, position: "relative" }}>
+              <div style={{ width: 58, height: 58, borderRadius: 29, background: group.color + "33", border: `2px solid ${group.color}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0, position: "relative", color: group.color }}>
                 {group.avatar}
                 {group.unread > 0 && (
                   <div style={{ position: "absolute", top: -5, right: -5, minWidth: 24, height: 24, borderRadius: 12, background: "#E83030", color: "white", fontSize: 11, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid white", fontFamily: "system-ui, sans-serif", padding: "0 4px" }}>
@@ -275,7 +277,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
                 <p style={{ fontSize: 18, fontWeight: 700, color: "#2D1B69", margin: "0 0 3px", fontFamily: "system-ui, sans-serif" }}>{group.name}</p>
                 <p style={{ fontSize: 13, color: "#999", margin: 0, fontFamily: "system-ui, sans-serif" }}>{group.members.toLocaleString()} members</p>
               </div>
-              <span style={{ fontSize: 20, color: "#C0B0D8" }}>›</span>
+              <span style={{ fontSize: 16, color: "#C0B0D8" }}><FaChevronRight /></span>
             </button>
           ))}
         </div>
@@ -293,7 +295,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
           display: "flex", alignItems: "center", justifyContent: "center",
           boxShadow: "0 6px 20px rgba(107,63,160,0.4)",
         }}
-      >+</button>
+      ><FaPlus /></button>
 
       {/* ── SHARE TO CONTACT MODAL ── */}
       {sharingPost && (
@@ -310,8 +312,8 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
             {/* Handle bar */}
             <div style={{ width: 40, height: 4, borderRadius: 2, background: "#D0B8F5", margin: "0 auto 20px" }} />
 
-            <p style={{ fontSize: 19, fontWeight: 800, color: "#2D1B69", margin: "0 0 4px", fontFamily: "system-ui, sans-serif" }}>
-              ↗️ Share Post
+            <p style={{ fontSize: 19, fontWeight: 800, color: "#2D1B69", margin: "0 0 4px", fontFamily: "system-ui, sans-serif", display: "flex", alignItems: "center", gap: "8px" }}>
+              <FaShare /> Share Post
             </p>
             <p style={{ fontSize: 14, color: "#888", margin: "0 0 18px", fontFamily: "system-ui, sans-serif" }}>
               Send this post directly to a contact
@@ -341,11 +343,11 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
                   onMouseDown={e => e.currentTarget.style.background = "#F0E8FF"}
                   onMouseUp={e => e.currentTarget.style.background = "#F8F7FF"}
                 >
-                  <div style={{ width: 46, height: 46, borderRadius: 23, background: contact.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
+                  <div style={{ width: 46, height: 46, borderRadius: 23, background: contact.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0, color: "white" }}>
                     {contact.avatar}
                   </div>
                   <span style={{ fontSize: 17, fontWeight: 700, color: "#2D1B69", fontFamily: "system-ui, sans-serif", flex: 1 }}>{contact.name}</span>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: "#6B3FA0", fontFamily: "system-ui, sans-serif" }}>Send →</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#6B3FA0", fontFamily: "system-ui, sans-serif", display: "flex", alignItems: "center", gap: "6px" }}>Send <FaArrowRight /></span>
                 </button>
               ))}
             </div>
@@ -360,8 +362,9 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
           background: "#2D1B69", color: "white", borderRadius: 24, padding: "12px 22px",
           fontSize: 15, fontWeight: 700, fontFamily: "system-ui, sans-serif",
           boxShadow: "0 6px 20px rgba(45,27,105,0.35)", whiteSpace: "nowrap", zIndex: 300,
+          display: "flex", alignItems: "center", gap: "8px"
         }}>
-          ✅ Shared to {sharedTo}!
+          <FaCheckCircle color="#4CAF50" fontSize={18} /> Shared to {sharedTo}!
         </div>
       )}
     </div>
