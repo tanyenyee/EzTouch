@@ -7,24 +7,33 @@ import ChatList from "./screens/Chatlist";
 import ChatScreen from "./screens/Chatscreen";
 import CallingScreen from "./screens/Callingscreen";
 import AddContactScreen from "./screens/Addcontactscreen";
-import CommunityScreen from "./screens/CommunityScreen";
-import CreatePostScreen from "./screens/CreatePostScreen";
+import CommunityScreen from "./screens/Communityscreen";
+import CreatePostScreen from "./screens/Createpostscreen";
 import PostPreviewScreen from "./screens/Postpreviewscreeen";
-import JoinGroupScreen from "./screens/JoinGroupScreen";
-import GroupChatScreen from "./screens/GroupChatScreen";
-import ProfileScreen from "./screens/ProfileScreen";
-import EditProfileScreen from "./screens/EditProfileScreen";
-import SettingsScreen from "./screens/SettingsScreen";
+import JoinGroupScreen from "./screens/Joingroupscreen";
+import GroupChatScreen from "./screens/Groupchatscreen";
+import ProfileScreen from "./screens/Profilescreen";
+import EditProfileScreen from "./screens/Editprofilescreen";
+import SettingsScreen from "./screens/Settingsscreen";
 import ButtonSizeScreen from "./screens/Buttonsizescreen";
-import SafeInteractionScreen from "./screens/SafeInteractionScreen";
-import ConfirmationModeScreen from "./screens/ConfirmationModeScreen";
-import UndoSettingScreen from "./screens/UndoSettingScreen";
+import SafeInteractionScreen from "./screens/Safeinteractionscreen";
+import ConfirmationModeScreen from "./screens/Confirmationmodescreen";
+import UndoSettingScreen from "./screens/Undosettingscreen";
 
 export default function App() {
   const [screen, setScreen] = useState("splash");
   const [selectedContact, setSelectedContact] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [postText, setPostText] = useState("");
+  const [communityTab, setCommunityTab] = useState("discover");
+  const [myGroups, setMyGroups] = useState([
+    { id: 1, name: "Pet Lovers", avatar: "🐱", color: "#C8A0E8", unread: 67, members: 312 },
+    { id: 2, name: "University Malaya", avatar: "🎓", color: "#E8C0A0", unread: 20, members: 850 },
+    { id: 3, name: "Helping Each Other", avatar: "🤝", color: "#F5A0A0", unread: 0, members: 428 },
+    { id: 4, name: "Class 2025", avatar: "📚", color: "#A0D0E8", unread: 0, members: 65 },
+  ]);
+
+  const leaveGroup = (groupId) => setMyGroups(prev => prev.filter(g => g.id !== groupId));
   const [contacts, setContacts] = useState({
     recent: [
       { id: 1, name: "Boyfriend", avatar: "🧍", unread: 5, color: "#C4A882" },
@@ -74,11 +83,11 @@ export default function App() {
         )}
 
         {/* ── Community Module ── */}
-        {screen === "community" && <CommunityScreen onBack={() => go("home")} onCreatePost={() => go("createpost")} onJoinGroup={() => go("joingroup")} onOpenGroup={(g) => { setSelectedGroup(g); go("groupchat"); }} />}
-        {screen === "createpost" && <CreatePostScreen onBack={() => go("community")} onNext={(text) => { setPostText(text); go("postpreview"); }} />}
-        {screen === "postpreview" && <PostPreviewScreen postText={postText} onBack={() => go("createpost")} onPost={() => go("community")} />}
-        {screen === "joingroup" && <JoinGroupScreen onBack={() => go("community")} />}
-        {screen === "groupchat" && <GroupChatScreen group={selectedGroup} onBack={() => go("community")} />}
+        {screen === "community" && <CommunityScreen onBack={() => go("home")} onCreatePost={() => go("createpost")} onJoinGroup={() => go("joingroup")} onOpenGroup={(g) => { setSelectedGroup(g); setCommunityTab("mygroup"); go("groupchat"); }} defaultTab={communityTab} myGroups={myGroups} />}
+        {screen === "createpost" && <CreatePostScreen onBack={() => { setCommunityTab("discover"); go("community"); }} onNext={(text) => { setPostText(text); go("postpreview"); }} />}
+        {screen === "postpreview" && <PostPreviewScreen postText={postText} onBack={() => go("createpost")} onPost={() => { setCommunityTab("discover"); go("community"); }} />}
+        {screen === "joingroup" && <JoinGroupScreen onBack={() => { setCommunityTab("mygroup"); go("community"); }} />}
+        {screen === "groupchat" && <GroupChatScreen group={selectedGroup} onBack={() => go("community")} onLeaveGroup={(id) => { leaveGroup(id); go("community"); }} />}
 
         {/* ── Profile Module ── */}
         {screen === "profile" && <ProfileScreen onBack={() => go("home")} onEdit={() => go("editprofile")} />}

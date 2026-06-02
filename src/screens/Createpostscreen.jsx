@@ -1,65 +1,213 @@
 import { useState } from "react";
 
 export default function CreatePostScreen({ onBack, onNext }) {
-  const [text, setText] = useState("I love Interactive Design !");
+  const [text, setText] = useState("");
+  const [mood, setMood] = useState(null);
   const [recording, setRecording] = useState(false);
   const [pulse, setPulse] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const toggleRecord = () => {
-    if (!recording) {
-      setRecording(true);
-      let iv = setInterval(() => setPulse(p => !p), 500);
-      setTimeout(() => { clearInterval(iv); setRecording(false); }, 2500);
-    } else {
-      setRecording(false);
+  const MOODS = [
+    { emoji: "😊", label: "Happy" },
+    { emoji: "💪", label: "Strong" },
+    { emoji: "🙏", label: "Grateful" },
+    { emoji: "😔", label: "Down" },
+    { emoji: "❤️", label: "Loving" },
+  ];
+
+  const startVoice = () => {
+    setText("");
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("❌ Voice recognition is not supported. Please use Google Chrome or Microsoft Edge.");
+      return;
     }
+    const recog = new SpeechRecognition();
+    recog.lang = "en-MY";
+    recog.interimResults = false;
+    recog.maxAlternatives = 1;
+    setRecording(true);
+    setPulse(true);
+
+    recog.onresult = (event) => {
+      setText(event.results[0][0].transcript);
+    };
+    recog.onerror = () => {
+      setRecording(false);
+      setPulse(false);
+      alert("Could not capture speech. Please try again.");
+    };
+    recog.onend = () => {
+      setRecording(false);
+      setPulse(false);
+    };
+    try { recog.start(); } catch (e) { setRecording(false); }
+  };
+
+  const handleNext = () => {
+    if (!text.trim()) {
+      alert("Please write something before posting.");
+      return;
+    }
+    setShowConfirm(true);
   };
 
   return (
-    <div style={{ width: "100%", height: "100%", background: "#F4F0FF", display: "flex", flexDirection: "column" }}>
+    <div style={{ width: "100%", height: "100%", background: "#F4F0FF", display: "flex", flexDirection: "column", position: "relative" }}>
+
       {/* Header */}
       <div style={{ background: "white", padding: "48px 20px 14px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid #E8E0F8", flexShrink: 0 }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", fontSize: 26, cursor: "pointer", color: "#6B3FA0" }}>←</button>
+        <button
+          aria-label="Back"
+          onClick={onBack}
+          style={{ background: "none", border: "none", fontSize: 26, cursor: "pointer", color: "#6B3FA0", padding: "8px 12px", minWidth: 44, minHeight: 44 }}
+        >←</button>
         <h1 style={{ fontSize: 26, fontWeight: 700, color: "#6B3FA0", margin: 0, fontFamily: "system-ui, sans-serif" }}>Create Post</h1>
       </div>
 
-      <div style={{ flex: 1, padding: "24px 24px", display: "flex", flexDirection: "column", gap: 20 }}>
+      <div style={{ flex: 1, overflowY: "auto", padding: "20px 20px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+
+        {/* Author row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ width: 48, height: 48, borderRadius: 24, background: "#D0C0F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>👤</div>
+          <div>
+            <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#2D1B69", fontFamily: "system-ui, sans-serif" }}>You</p>
+            <p style={{ margin: 0, fontSize: 13, color: "#888", fontFamily: "system-ui, sans-serif" }}>Posting to Community</p>
+          </div>
+        </div>
+
+        {/* Mood picker */}
+        <div>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#6B3FA0", margin: "0 0 10px", fontFamily: "system-ui, sans-serif", textTransform: "uppercase", letterSpacing: 0.5 }}>How are you feeling?</p>
+          <div style={{ display: "flex", gap: 10 }}>
+            {MOODS.map(m => (
+              <button
+                key={m.emoji}
+                onClick={() => setMood(m.emoji)}
+                style={{
+                  flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+                  background: mood === m.emoji ? "#F0E8FF" : "white",
+                  border: mood === m.emoji ? "2px solid #6B3FA0" : "2px solid #E8E0F8",
+                  borderRadius: 16, padding: "10px 4px", cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+              >
+                <span style={{ fontSize: 22 }}>{m.emoji}</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: "#6B3FA0", fontFamily: "system-ui, sans-serif" }}>{m.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Text area */}
-        <textarea value={text} onChange={e => setText(e.target.value)} placeholder="What's on your mind?"
-          style={{ width: "100%", minHeight: 100, borderRadius: 16, border: "2px solid #D0B8F5", padding: "14px 16px", fontSize: 16, resize: "none", fontFamily: "system-ui, sans-serif", outline: "none", background: "#F5F0FF", color: "#2D1B69", boxSizing: "border-box" }} />
-
-        {/* Add image */}
-        <button style={{ display: "flex", alignItems: "center", gap: 12, background: "none", border: "none", cursor: "pointer", padding: "8px 0" }}>
-          <span style={{ fontSize: 28 }}>🖼️</span>
-          <span style={{ fontSize: 18, fontWeight: 600, color: "#2D1B69", fontFamily: "system-ui, sans-serif" }}>Add Image</span>
-        </button>
-
-        {/* Voice section */}
-        <div style={{ background: "white", borderRadius: 20, padding: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-          <p style={{ fontSize: 17, fontWeight: 700, color: "#2D1B69", margin: 0, fontFamily: "system-ui, sans-serif" }}>Voice Message</p>
-          <button onClick={toggleRecord} style={{
-            width: 72, height: 72, borderRadius: 36,
-            background: "linear-gradient(135deg, #F5A06A, #E87030)",
-            border: "none", cursor: "pointer", fontSize: 32,
-            boxShadow: recording ? "0 0 0 14px rgba(245,160,106,0.25)" : "0 4px 16px rgba(245,160,106,0.4)",
-            transition: "box-shadow 0.3s",
-          }}>🎙️</button>
-          <p style={{ fontSize: 14, color: recording ? "#E87030" : "#888", fontWeight: 600, margin: 0, fontFamily: "system-ui, sans-serif" }}>
-            {recording ? "listening..." : "Tap to record"}
+        <div>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#6B3FA0", margin: "0 0 10px", fontFamily: "system-ui, sans-serif", textTransform: "uppercase", letterSpacing: 0.5 }}>
+            What's on your mind?
+          </p>
+          <textarea
+            value={text}
+            onChange={e => setText(e.target.value)}
+            placeholder="Share your thoughts, experiences, or ask for support..."
+            rows={4}
+            style={{
+              width: "100%", borderRadius: 18, border: "2px solid #D0B8F5",
+              padding: "16px 18px", fontSize: 17, resize: "none",
+              fontFamily: "system-ui, sans-serif", outline: "none",
+              background: "#F9F8FF", color: "#2D1B69", boxSizing: "border-box",
+              lineHeight: 1.6,
+            }}
+          />
+          <p style={{ textAlign: "right", fontSize: 12, color: "#BBB", margin: "4px 0 0", fontFamily: "system-ui, sans-serif" }}>
+            {text.length} characters
           </p>
         </div>
 
-        {/* Converted text */}
-        <div style={{ background: "#F5F0FF", borderRadius: 16, border: "2px solid #D0B8F5", padding: "12px 16px", fontSize: 15, color: "#2D1B69", fontFamily: "system-ui, sans-serif", minHeight: 52 }}>
-          {text}
+        {/* Voice to text section */}
+        <div style={{ background: "white", borderRadius: 22, padding: "20px 18px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, boxShadow: "0 2px 10px rgba(107,63,160,0.07)" }}>
+          <p style={{ fontSize: 16, fontWeight: 700, color: "#2D1B69", margin: 0, fontFamily: "system-ui, sans-serif" }}>🎙️ Dictate Instead</p>
+          <p style={{ fontSize: 13, color: "#888", margin: 0, fontFamily: "system-ui, sans-serif", textAlign: "center" }}>
+            Struggling to type? Tap the mic and speak your post!
+          </p>
+          <button
+            onClick={startVoice}
+            style={{
+              width: 80, height: 80, borderRadius: 40,
+              background: recording
+                ? "linear-gradient(135deg, #E87030, #C05010)"
+                : "linear-gradient(135deg, #F5A06A, #E87030)",
+              border: "none", cursor: "pointer", fontSize: 34,
+              boxShadow: recording
+                ? "0 0 0 18px rgba(245,160,106,0.2), 0 4px 16px rgba(245,160,106,0.4)"
+                : "0 4px 16px rgba(245,160,106,0.4)",
+              transition: "all 0.3s",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+          >🎙️</button>
+          <p style={{ fontSize: 15, color: recording ? "#E87030" : "#888", fontWeight: 600, margin: 0, fontFamily: "system-ui, sans-serif" }}>
+            {recording ? "🔴 Listening... Speak clearly" : "Tap to speak"}
+          </p>
         </div>
 
-        {/* Next button */}
-        <button onClick={() => onNext && onNext(text)}
-          style={{ width: "100%", height: 60, borderRadius: 18, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 19, fontWeight: 700, fontFamily: "system-ui, sans-serif", marginTop: "auto", boxShadow: "0 6px 20px rgba(107,63,160,0.3)" }}>
-          NEXT
+        {/* Add image placeholder */}
+        <button
+          style={{
+            display: "flex", alignItems: "center", gap: 14,
+            background: "white", border: "2px dashed #D0B8F5", borderRadius: 18,
+            padding: "16px 18px", cursor: "pointer", width: "100%",
+            boxSizing: "border-box",
+          }}
+        >
+          <div style={{ width: 48, height: 48, borderRadius: 24, background: "#F0E8FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>🖼️</div>
+          <span style={{ fontSize: 16, fontWeight: 700, color: "#6B3FA0", fontFamily: "system-ui, sans-serif" }}>Add a Photo</span>
+        </button>
+
+        {/* NEXT button */}
+        <button
+          onClick={handleNext}
+          style={{
+            width: "100%", height: 64, borderRadius: 22,
+            background: text.trim()
+              ? "linear-gradient(135deg,#6B3FA0,#8B5CC8)"
+              : "#D0C8E8",
+            color: "white", border: "none", cursor: text.trim() ? "pointer" : "default",
+            fontSize: 20, fontWeight: 700, fontFamily: "system-ui, sans-serif",
+            boxShadow: text.trim() ? "0 6px 20px rgba(107,63,160,0.3)" : "none",
+            transition: "all 0.3s",
+          }}
+        >
+          Preview Post →
         </button>
       </div>
+
+      {/* Anti-accidental post confirmation modal */}
+      {showConfirm && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          style={{ position: "absolute", inset: 0, background: "rgba(45,27,105,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 24 }}
+        >
+          <div style={{ background: "white", borderRadius: 32, padding: "32px 24px", width: "100%", textAlign: "center", boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}>
+            <div style={{ fontSize: 44, marginBottom: 12 }}>📋</div>
+            <p style={{ fontSize: 20, fontWeight: 800, color: "#2D1B69", marginBottom: 8, fontFamily: "system-ui, sans-serif" }}>Ready to Preview?</p>
+            <p style={{ fontSize: 14, color: "#666", marginBottom: 12, fontFamily: "system-ui, sans-serif", lineHeight: 1.5 }}>
+              You'll be able to review your post before it goes live.
+            </p>
+            <div style={{ background: "#F4F0FF", borderRadius: 16, padding: "12px 16px", marginBottom: 24, textAlign: "left" }}>
+              <p style={{ fontSize: 15, color: "#2D1B69", fontFamily: "system-ui, sans-serif", margin: 0, lineHeight: 1.5 }}>{text}</p>
+            </div>
+            <div style={{ display: "flex", gap: 14 }}>
+              <button
+                onClick={() => setShowConfirm(false)}
+                style={{ flex: 1, height: 56, borderRadius: 18, background: "#F5F5F5", color: "#666", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}
+              >Edit More</button>
+              <button
+                onClick={() => { setShowConfirm(false); onNext && onNext(text); }}
+                style={{ flex: 1, height: 56, borderRadius: 18, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}
+              >Continue</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
