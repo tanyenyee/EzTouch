@@ -193,7 +193,7 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
               {/* Massive 64px+ height button components protecting from tremor misclicks */}
               <button onClick={() => { setMode("voiceRecord"); startRecordingSimulation(); }} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 8, background: "#FFF0E5", border: "2px solid #F5A06A", borderRadius: 24, padding: "18px 12px", cursor: "pointer" }}>
                 <div style={{ width: 56, height: 56, borderRadius: 28, background: "linear-gradient(135deg, #F5A06A, #E87030)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26 }}>🎙️</div>
-                <span style={{ fontSize: 16, fontWeight: 700, color: "#2D1B69", fontFamily: "system-ui, sans-serif" }}>Voice to Text</span>
+                <span style={{ fontSize: 16, fontWeight: 700, color: "#2D1B69", fontFamily: "system-ui, sans-serif" }}>Speech to Text</span>
               </button>
               <button onClick={() => setMode("quickMsg")} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 8, background: "#FFFBEA", border: "2px solid #F5C030", borderRadius: 24, padding: "18px 12px", cursor: "pointer" }}>
                 <div style={{ width: 56, height: 56, borderRadius: 28, background: "linear-gradient(135deg, #F5C030, #E89010)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26 }}>💡</div>
@@ -217,7 +217,7 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
         {/* Voice Recording Display Context */}
         {mode === "voiceRecord" && (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, padding: "12px 0" }}>
-            <span style={{ fontSize: 16, color: "#6B3FA0", fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>🎙️ Intelligent Voice Processing</span>
+            <span style={{ fontSize: 16, color: "#6B3FA0", fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>🎙️ Speech To Text</span>
             <div style={{
               width: 90, height: 90, borderRadius: 45,
               background: "linear-gradient(135deg, #F5A06A, #E87030)",
@@ -228,10 +228,10 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
               {recording ? '📡' : '✨'}
             </div>
             <p style={{ fontSize: 17, color: "#E87030", fontWeight: 700, fontFamily: "system-ui, sans-serif", margin: 0 }}>
-              {recording ? 'Listening closely...' : isTyping ? 'Converting Speech to Text...' : 'Ready'}
+              {recording ? 'Listening ..' : isTyping ? 'Converting Speech to Text...' : 'Ready'}
             </p>
             <div style={{ width: "100%", background: "#F5F0FF", borderRadius: 16, border: "2px dashed #D0B8F5", padding: "14px", fontSize: 16, color: "#2D1B69", fontFamily: "system-ui, sans-serif", minHeight: 50, textAlign: "center" }}>
-              {transcribed || "Speak now..."}
+              {transcribed || "Transcribing..."}
             </div>
           </div>
         )}
@@ -268,7 +268,7 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
             {/* Highly segregated action targets spaced out clearly to prevent execution errors */}
             <div style={{ display: "flex", gap: 20 }}>
               <button onClick={() => setMode("main")} style={{ flex: 1, height: 56, borderRadius: 16, background: "#E0E0E0", color: "#444", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>CANCEL</button>
-              <button onClick={() => sendMessage(transcribed)} style={{ flex: 1, height: 56, borderRadius: 16, background: "linear-gradient(135deg, #6B3FA0, #8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}>SEND MESSAGE</button>
+              <button onClick={() => sendMessage(transcribed)} style={{ flex: 1, height: 56, borderRadius: 16, background: "linear-gradient(135deg, #6B3FA0, #8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}>SEND</button>
             </div>
           </div>
         )}

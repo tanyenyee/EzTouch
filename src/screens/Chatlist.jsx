@@ -1,14 +1,14 @@
 import { FaArrowLeft, FaUser, FaPlus } from "react-icons/fa";
 
-// Use `contacts` prop supplied by the app; fall back to defaults
+// 📝 Added manual mock preview strings to each data profile
 const defaultContacts = {
   recent: [
-    { id: 1, name: "Boyfriend", avatar: <FaUser style={{ color: "currentColor" }} />, unread: 5, color: "#C4A882" },
+    { id: 1, name: "Boyfriend", avatar: <FaUser style={{ color: "currentColor" }} />, unread: 5, color: "#C4A882", lastMsg: "Want to grab lunch?" },
   ],
   others: [
-    { id: 2, name: "Mummy", avatar: <FaUser style={{ color: "currentColor" }} />, unread: 9, color: "#E8A0A0" },
-    { id: 3, name: "Xiao Mei", avatar: <FaUser style={{ color: "currentColor" }} />, unread: 0, color: "#F0C0B0" },
-    { id: 4, name: "Alice", avatar: <FaUser style={{ color: "currentColor" }} />, unread: 0, color: "#A0C8A0" },
+    { id: 2, name: "Mummy", avatar: <FaUser style={{ color: "currentColor" }} />, unread: 9, color: "#E8A0A0", lastMsg: "Call me when you're home safe ❤️" },
+    { id: 3, name: "Xiao Mei", avatar: <FaUser style={{ color: "currentColor" }} />, unread: 0, color: "#F0C0B0", lastMsg: "Sent an attachment" },
+    { id: 4, name: "Alice", avatar: <FaUser style={{ color: "currentColor" }} />, unread: 0, color: "#A0C8A0", lastMsg: "See you at the office tomorrow!" },
   ],
 };
 
@@ -34,7 +34,7 @@ function ContactRow({ contact, onClick }) {
       onMouseDown={e => e.currentTarget.style.transform = "scale(0.98)"}
       onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}
     >
-      {/* Avatar */}
+      {/* Avatar Container */}
       <div style={{
         width: 54,
         height: 54,
@@ -72,14 +72,32 @@ function ContactRow({ contact, onClick }) {
         )}
       </div>
 
-      <span style={{
-        fontSize: 20,
-        fontWeight: 600,
-        color: "#2D1B69",
-        fontFamily: "system-ui, sans-serif",
-      }}>
-        {contact.name}
-      </span>
+      {/* 🛠️ Stacks Name and Message text fields vertically */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 4, overflow: "hidden" }}>
+        <span style={{
+          fontSize: 20,
+          fontWeight: 700,
+          color: "#2D1B69",
+          fontFamily: "system-ui, sans-serif",
+          lineHeight: 1.2
+        }}>
+          {contact.name}
+        </span>
+        
+        {/* Manual static preview line truncation styling */}
+        <span style={{
+          fontSize: 14,
+          fontWeight: 500,
+          color: "#6B3FA0",
+          fontFamily: "system-ui, sans-serif",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          maxWidth: "220px"
+        }}>
+          {contact.lastMsg || "Want to grab lunch?"}
+        </span>
+      </div>
     </button>
   );
 }
@@ -104,17 +122,17 @@ export default function ChatList({ onBack, onOpenChat, contacts = defaultContact
         flexShrink: 0,
       }}>
         <button
-                  onClick={onBack}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    fontSize: 26,
-                    cursor: "pointer",
-                    color: "#6B3FA0",
-                  }}
-                >
-                  <FaArrowLeft />
-                </button>
+          onClick={onBack}
+          style={{
+            background: "none",
+            border: "none",
+            fontSize: 26,
+            cursor: "pointer",
+            color: "#6B3FA0",
+          }}
+        >
+          <FaArrowLeft />
+        </button>
         <h1 style={{
           fontSize: 28,
           fontWeight: 700,

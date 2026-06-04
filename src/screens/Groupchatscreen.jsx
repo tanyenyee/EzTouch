@@ -234,7 +234,7 @@ export default function GroupChatScreen({ group, onBack, onLeaveGroup }) {
                 style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 8, background: "#FFF0E5", border: "2px solid #F5A06A", borderRadius: 22, padding: "16px 10px", cursor: "pointer" }}
               >
                 <div style={{ width: 52, height: 52, borderRadius: 26, background: "linear-gradient(135deg,#F5A06A,#E87030)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}><FaMicrophone /></div>
-                <span style={{ fontSize: 15, fontWeight: 700, color: "#2D1B69", fontFamily: "system-ui, sans-serif" }}>Voice to Text</span>
+                <span style={{ fontSize: 15, fontWeight: 700, color: "#2D1B69", fontFamily: "system-ui, sans-serif" }}>Speech to Text</span>
               </button>
               <button
                 onClick={() => setMode("quickMsg")}
@@ -264,7 +264,7 @@ export default function GroupChatScreen({ group, onBack, onLeaveGroup }) {
         {/* VOICE RECORDING mode */}
         {mode === "voiceRecord" && (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, padding: "8px 0" }}>
-            <span style={{ fontSize: 15, color: "#6B3FA0", fontWeight: 700, fontFamily: "system-ui, sans-serif" }}><FaMicrophone /> Group Voice Input</span>
+            <span style={{ fontSize: 15, color: "#6B3FA0", fontWeight: 700, fontFamily: "system-ui, sans-serif" }}><FaMicrophone /> Speech To Text</span>
             <div style={{
               width: 88, height: 88, borderRadius: 44,
               background: "linear-gradient(135deg,#F5A06A,#E87030)",
@@ -278,7 +278,7 @@ export default function GroupChatScreen({ group, onBack, onLeaveGroup }) {
               {recording ? "Listening..." : "Processing..."}
             </p>
             <div style={{ width: "100%", background: "#F5F0FF", borderRadius: 14, border: "2px dashed #D0B8F5", padding: "12px", fontSize: 15, color: "#2D1B69", fontFamily: "system-ui, sans-serif", minHeight: 44, textAlign: "center" }}>
-              {transcribed || "Speak clearly..."}
+              {transcribed || "Transcribing..."}
             </div>
           </div>
         )}
@@ -296,7 +296,7 @@ export default function GroupChatScreen({ group, onBack, onLeaveGroup }) {
             />
             <div style={{ display: "flex", gap: 16 }}>
               <button onClick={() => setMode("main")} style={{ flex: 1, height: 54, borderRadius: 16, background: "#E0E0E0", color: "#444", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>CANCEL</button>
-              <button onClick={() => sendMessage(transcribed)} style={{ flex: 1, height: 54, borderRadius: 16, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}>SEND TO GROUP</button>
+              <button onClick={() => sendMessage(transcribed)} style={{ flex: 1, height: 54, borderRadius: 16, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}>SEND</button>
             </div>
           </div>
         )}
