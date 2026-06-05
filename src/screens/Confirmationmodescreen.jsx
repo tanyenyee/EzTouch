@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaArrowLeft, FaShieldAlt, FaComments, FaHeart, FaPhoneAlt, FaCheck, FaFlask } from "react-icons/fa";
+import { useToast } from "../components/ToastProvider";
 
 function Toggle({ value, onChange }) {
   return (
@@ -16,6 +17,7 @@ export default function ConfirmationModeScreen({ onBack }) {
   const [actions, setActions] = useState({ sendMsg: true, likeComment: false, makeCalls: true });
   const [confirmType, setConfirmType] = useState("Popup Confirmation");
   const [showDemo, setShowDemo] = useState(false);
+  const { addToast } = useToast();
 
   const toggle = key => val => setActions(a => ({ ...a, [key]: val }));
 
@@ -103,7 +105,7 @@ export default function ConfirmationModeScreen({ onBack }) {
             </p>
             <div style={{ display: "flex", gap: 12 }}>
               <button onClick={() => setShowDemo(false)} style={{ flex: 1, height: 52, borderRadius: 14, background: "#888", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>CANCEL</button>
-              <button onClick={() => { alert("✅ Action confirmed!"); setShowDemo(false); }} style={{ flex: 1, height: 52, borderRadius: 14, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}><FaCheck style={{ color: "currentColor", marginRight: 8 }} />YES</button>
+              <button onClick={() => { addToast("Action confirmed!", "success"); setShowDemo(false); }} style={{ flex: 1, height: 52, borderRadius: 14, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}><FaCheck style={{ color: "currentColor", marginRight: 8 }} />YES</button>
             </div>
           </div>
         </div>

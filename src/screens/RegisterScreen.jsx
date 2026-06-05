@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaUser, FaEnvelope, FaLock, FaCheck } from "react-icons/fa";
+import { useToast } from "../components/ToastProvider";
 
 const inputStyle = {
   width: "100%",
@@ -56,30 +57,31 @@ export default function RegisterScreen({ onSignUp, onBack }) {
   const [form, setForm] = useState({ username: "", email: "", password: "", confirm: "" });
   const [focused, setFocused] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const { addToast } = useToast();
 
   const update = key => e => setForm({ ...form, [key]: e.target.value });
 
   const handleSignUp = () => {
     if (!form.username || !form.email || !form.password || !form.confirm) {
-      alert("⚠️ Please fill in all fields.");
+      addToast("Please fill in all fields.", "warning");
       return;
     }
     if (form.password !== form.confirm) {
-      alert("⚠️ Passwords do not match.");
+      addToast("Passwords do not match.", "error");
       return;
     }
     if (!agreed) {
-      alert("⚠️ You must agree to the Terms of Service and Privacy Policy.");
+      addToast("You must agree to the Terms of Service and Privacy Policy.", "warning");
       return;
     }
 
     const users = JSON.parse(localStorage.getItem("eztouch_users") || "[]");
     if (users.some(u => u.username.toLowerCase() === form.username.toLowerCase())) {
-      alert("⚠️ Username is already taken.");
+      addToast("Username is already taken.", "error");
       return;
     }
     if (users.some(u => u.email.toLowerCase() === form.email.toLowerCase())) {
-      alert("⚠️ Email is already registered.");
+      addToast("Email is already registered.", "error");
       return;
     }
 
@@ -94,7 +96,7 @@ export default function RegisterScreen({ onSignUp, onBack }) {
 
     users.push(newUser);
     localStorage.setItem("eztouch_users", JSON.stringify(users));
-    alert("🎉 Registration successful! Please log in.");
+    addToast("Registration successful! Please log in.", "success");
     onSignUp();
   };
 

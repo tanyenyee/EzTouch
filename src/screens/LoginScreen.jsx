@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaHandPaper, FaUser, FaLock, FaEye, FaEyeSlash, FaUniversalAccess } from "react-icons/fa";
+import { useToast } from "../components/ToastProvider";
 
 const inputStyle = {
   width: "100%",
@@ -31,10 +32,11 @@ export default function LoginScreen({ onLogin, onRegister }) {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [focused, setFocused] = useState("");
+  const { addToast } = useToast();
 
   const handleLogin = () => {
     if (!username || !password) {
-      alert("⚠️ Please enter username and password.");
+      addToast("Please enter username and password.", "warning");
       return;
     }
 
@@ -44,10 +46,11 @@ export default function LoginScreen({ onLogin, onRegister }) {
     );
 
     if (!matchedUser) {
-      alert("⚠️ Invalid username or password.");
+      addToast("Invalid username or password.", "error");
       return;
     }
 
+    addToast("Login successful.", "success");
     localStorage.setItem("eztouch_session", JSON.stringify(matchedUser));
     onLogin(matchedUser);
   };

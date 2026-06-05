@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FaUser, FaGlassCheers, FaSmile, FaHandshake, FaHands, FaLifeRing, FaClock, FaPray, FaThumbsUp, FaComment, FaCat, FaHeart, FaArrowLeft, FaCog, FaUndo, FaMicrophone, FaLightbulb, FaPaperPlane, FaBroadcastTower, FaMagic, FaExclamationTriangle, FaSignOutAlt } from "react-icons/fa";
 import ReactiveKeyboard from "./ReactiveKeyboard";
+import { useToast } from "../components/ToastProvider";
 
 const MEMBERS = [
   { id: 1, name: "Anna", avatar: <FaUser />, color: "#E8A0A0" },
@@ -46,6 +47,7 @@ export default function GroupChatScreen({ group, onBack, onLeaveGroup, onDeleteG
   const [hasLeft, setHasLeft] = useState(false);
   const bottomRef = useRef(null);
   const [showKeyboard, setShowKeyboard] = useState(false);
+  const { addToast } = useToast();
 
   const [editGroupModal, setEditGroupModal] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -168,7 +170,7 @@ export default function GroupChatScreen({ group, onBack, onLeaveGroup, onDeleteG
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert("Voice recognition is not supported. Please use Google Chrome or Microsoft Edge.");
+      addToast("Voice recognition is not supported. Please use Google Chrome or Microsoft Edge.", "error");
       setRecording(false);
       setPulse(false);
       return;
@@ -187,7 +189,7 @@ export default function GroupChatScreen({ group, onBack, onLeaveGroup, onDeleteG
 
     recog.onerror = (err) => {
       if (err.error === "not-allowed") {
-        alert("Microphone blocked! Please allow mic access in your browser.");
+        addToast("Microphone blocked! Please allow mic access in your browser.", "error");
       }
       setRecording(false);
       setPulse(false);
@@ -199,7 +201,7 @@ export default function GroupChatScreen({ group, onBack, onLeaveGroup, onDeleteG
       setPulse(false);
       setTranscribed(prev => {
         if (!prev?.trim()) {
-          alert("Could not catch that. Please try speaking again.");
+          addToast("Could not catch that. Please try speaking again.", "warning");
           setMode("main");
           return "";
         }

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import ReactiveKeyboard from "./ReactiveKeyboard";
+import { useToast } from "../components/ToastProvider";
 
 const mockMessages = [
   { id: 1, text: "Hey! Are you free today?", mine: false },
@@ -25,6 +26,7 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
   const [undoMsg, setUndoMsg] = useState(null);
   const [pulse, setPulse] = useState(false);
   const [showKeyboard, setShowKeyboard] = useState(false);
+  const { addToast } = useToast();
 
   const name = contact?.name || "Boyfriend";
   const avatar = contact?.avatar || "🧍";
@@ -55,7 +57,7 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     
     if (!SpeechRecognition) {
-      alert("❌ Voice recognition is not supported by this browser. Please use Google Chrome or Microsoft Edge!");
+      addToast("Voice recognition is not supported by this browser. Please use Google Chrome or Microsoft Edge!", "error");
       setRecording(false);
       setPulse(false);
       return;
@@ -80,9 +82,9 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
       console.error('Speech recognition error:', err.error);
       
       if (err.error === 'not-allowed') {
-        alert("⚠️ Microphone blocked! Please click the camera/mic icon in your browser address bar and choose 'Allow'.");
+        addToast("Microphone blocked! Please click the camera/mic icon in your browser address bar and choose 'Allow'.", "error");
       } else if (err.error === 'no-speech') {
-        alert("🤫 No speech detected. Please try holding the device closer and speaking clearly.");
+        addToast("No speech detected. Please try holding the device closer and speaking clearly.", "warning");
       }
       
       setRecording(false);
@@ -98,7 +100,7 @@ export default function ChatScreen({ contact, onBack, onCall, onAddContact }) {
       // Accessibility validation check: Ensure we didn't just capture an accidental empty murmur
       setTranscribed(prev => {
         if (!prev || prev.trim() === "") {
-          alert("Could not catch that clearly. Please try speaking again.");
+          addToast("Could not catch that clearly. Please try speaking again.", "warning");
           setMode("main");
           return "";
         } else {

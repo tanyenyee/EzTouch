@@ -5,9 +5,10 @@ import {
   FaPhone,
   FaCalendarAlt,
   FaEdit,
+  FaSignOutAlt,
 } from "react-icons/fa";
 
-export default function ProfileScreen({ profile: profileProp, onBack, onEdit }) {
+export default function ProfileScreen({ profile: profileProp, onBack, onEdit, onLogout }) {
   const profile = profileProp || {
     username: "Username",
     email: "user@example.com",
@@ -187,6 +188,31 @@ export default function ProfileScreen({ profile: profileProp, onBack, onEdit }) 
         >
           <FaEdit />
           Edit Profile
+        </button>
+
+        {/* Log Out button */}
+        <button
+          onClick={onLogout}
+          style={{
+            width: "100%",
+            height: 62,
+            borderRadius: 18,
+            background: "#FFF5F5",
+            color: "#E83030",
+            border: "2px solid #E83030",
+            cursor: "pointer",
+            fontSize: 19,
+            fontWeight: 700,
+            fontFamily: "system-ui, sans-serif",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+            marginTop: 14,
+          }}
+        >
+          <FaSignOutAlt />
+          Log Out
         </button>
       </div>
     </div>

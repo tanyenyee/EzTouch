@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { FaArrowLeft, FaUser, FaUserPlus, FaPlus } from "react-icons/fa";
+import { useToast } from "../components/ToastProvider";
 
 export default function AddContactScreen({ onBack, onAdded }) {
   const [name, setName] = useState("");
@@ -7,6 +8,7 @@ export default function AddContactScreen({ onBack, onAdded }) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [focused, setFocused] = useState("");
   const yesRef = useRef(null);
+  const { addToast } = useToast();
 
   useEffect(() => {
     if (showConfirm && yesRef.current) yesRef.current.focus();
@@ -51,7 +53,7 @@ export default function AddContactScreen({ onBack, onAdded }) {
           style={{ ...inputStyle("phone"), marginBottom: 36 }} />
 
         {/* Add Contact button */}
-        <button onClick={() => { if (name && phone) setShowConfirm(true); else alert("Please fill in all fields."); }}
+        <button onClick={() => { if (name && phone) setShowConfirm(true); else addToast("Please fill in all fields.", "warning"); }}
           style={{ width: "100%", height: 62, borderRadius: 18, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 18, fontWeight: 700, fontFamily: "system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 14, boxShadow: "0 6px 20px rgba(107,63,160,0.3)" }}>
           <span style={{ fontSize: 22, color: "#6B3FA0" }}><FaUserPlus style={{ color: "currentColor" }} /></span> Add Contact
         </button>

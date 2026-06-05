@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
+import { useToast } from "../components/ToastProvider";
 
 export default function EditProfileScreen({ profile: profileProp, onBack, onSaved }) {
   const profile = profileProp || {
@@ -18,10 +19,11 @@ export default function EditProfileScreen({ profile: profileProp, onBack, onSave
   });
   const [focused, setFocused] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const { addToast } = useToast();
 
   const handleSave = () => {
     if (!form.username || !form.email || !form.phone) {
-      alert("⚠️ Username, Email, and Phone cannot be empty.");
+      addToast("Username, Email, and Phone cannot be empty.", "warning");
       return;
     }
 
@@ -29,14 +31,14 @@ export default function EditProfileScreen({ profile: profileProp, onBack, onSave
 
     if (form.username.toLowerCase() !== profile.username.toLowerCase()) {
       if (users.some(u => u.username.toLowerCase() === form.username.toLowerCase())) {
-        alert("⚠️ Username is already taken.");
+        addToast("Username is already taken.", "error");
         return;
       }
     }
 
     if (form.email.toLowerCase() !== profile.email.toLowerCase()) {
       if (users.some(u => u.email.toLowerCase() === form.email.toLowerCase())) {
-        alert("⚠️ Email is already registered.");
+        addToast("Email is already registered.", "error");
         return;
       }
     }

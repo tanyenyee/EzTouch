@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { FaArrowLeft, FaUser, FaSmile, FaDumbbell, FaPray, FaFrown, FaHeart, FaMicrophone, FaCircle, FaImage, FaClipboard } from "react-icons/fa";
+import { useToast } from "../components/ToastProvider";
 
 export default function CreatePostScreen({ onBack, onNext }) {
   const [text, setText] = useState("");
@@ -9,6 +10,7 @@ export default function CreatePostScreen({ onBack, onNext }) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
+  const { addToast } = useToast();
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -29,7 +31,7 @@ export default function CreatePostScreen({ onBack, onNext }) {
     setText("");
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert("Voice recognition is not supported. Please use Google Chrome or Microsoft Edge.");
+      addToast("Voice recognition is not supported. Please use Google Chrome or Microsoft Edge.", "error");
       return;
     }
     const recog = new SpeechRecognition();
@@ -45,7 +47,7 @@ export default function CreatePostScreen({ onBack, onNext }) {
     recog.onerror = () => {
       setRecording(false);
       setPulse(false);
-      alert("Could not capture speech. Please try again.");
+      addToast("Could not capture speech. Please try again.", "error");
     };
     recog.onend = () => {
       setRecording(false);
@@ -56,7 +58,7 @@ export default function CreatePostScreen({ onBack, onNext }) {
 
   const handleNext = () => {
     if (!text.trim() && !image) {
-      alert("Please write something or add a photo before posting.");
+      addToast("Please write something or add a photo before posting.", "warning");
       return;
     }
     setShowConfirm(true);

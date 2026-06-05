@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { FaHands, FaPaw, FaSun, FaHeart, FaMobileAlt, FaPalette, FaArrowLeft, FaSearch, FaUsers, FaCheck, FaGlassCheers, FaPlus, FaUndo } from "react-icons/fa";
+import { useToast } from "../components/ToastProvider";
 
 const CATEGORIES = ["All", "Health", "Pets", "Daily Life", "Support", "Hobbies", "Education"];
 const FORM_CATEGORIES = ["Health", "Pets", "Daily Life", "Support", "Hobbies", "Education"];
@@ -50,6 +51,7 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
   const [joinedGroup, setJoinedGroup] = useState(null);
   const [joinedIds, setJoinedIds] = useState(new Set());
   const [timeLeft, setTimeLeft] = useState(0);
+  const { addToast } = useToast();
 
   useEffect(() => {
     let timer;
@@ -67,7 +69,6 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
   const [newCategory, setNewCategory] = useState("Health");
   const [newDesc, setNewDesc] = useState("");
   const [newIconIdx, setNewIconIdx] = useState(0);
-  const [showToast, setShowToast] = useState(false);
 
   const allGroups = [...GROUPS, ...customGroups];
 
@@ -96,11 +97,11 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
   };
 
   const handleCreate = () => {
-    if (!newName.trim()) return alert("Please enter a group name.");
+    if (!newName.trim()) return addToast("Please enter a group name.", "warning");
     
     // Check duplicates in the same category
     const isDuplicate = allGroups.some(g => g.category === newCategory && g.name.toLowerCase() === newName.trim().toLowerCase());
-    if (isDuplicate) return alert(`A group named "${newName.trim()}" already exists in the ${newCategory} category.`);
+    if (isDuplicate) return addToast(`A group named "${newName.trim()}" already exists in the ${newCategory} category.`, "warning");
 
     const newGroup = {
       id: Date.now(),
@@ -113,13 +114,10 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
     };
 
     setShowCreateModal(false);
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-      if (onCreateGroup) {
-        onCreateGroup(newGroup);
-      }
-    }, 1500);
+    addToast("Group created successfully!", "success");
+    if (onCreateGroup) {
+      onCreateGroup(newGroup);
+    }
   };
 
   return (
@@ -408,19 +406,6 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
               </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Success Toast */}
-      {showToast && (
-        <div style={{
-          position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)",
-          background: "#2E7D32", color: "white", borderRadius: 24, padding: "14px 24px",
-          fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif",
-          boxShadow: "0 6px 20px rgba(46,125,50,0.4)", whiteSpace: "nowrap", zIndex: 300,
-          display: "flex", alignItems: "center", gap: 10
-        }}>
-          <FaCheck /> Group created successfully!
         </div>
       )}
 
