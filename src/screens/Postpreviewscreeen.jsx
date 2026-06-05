@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { FaGlassCheers, FaArrowLeft, FaExclamationTriangle, FaUser, FaHeart, FaComment, FaSmile, FaShare, FaRocket } from "react-icons/fa";
+import { useSizeContext } from "../context/SizeContext";
 
 export default function PostPreviewScreen({ postText, postImage, onBack, onPost }) {
+  const { sz } = useSizeContext();
   const [posted, setPosted] = useState(false);
 
   const handlePost = () => {
@@ -18,7 +20,7 @@ export default function PostPreviewScreen({ postText, postImage, onBack, onPost 
         </p>
         <button
           onClick={() => onPost && onPost()}
-          style={{ width: "100%", height: 64, borderRadius: 22, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 20, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 6px 20px rgba(107,63,160,0.3)" }}
+          style={{ width: "100%", height: sz.height, borderRadius: sz.borderRadius, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 6px 20px rgba(107,63,160,0.3)" }}
         >
           Back to Community
         </button>
@@ -100,13 +102,13 @@ export default function PostPreviewScreen({ postText, postImage, onBack, onPost 
       <div style={{ background: "white", padding: "16px 20px 32px", borderTop: "1px solid #E8E0F8", display: "flex", gap: 14, flexShrink: 0 }}>
         <button
           onClick={onBack}
-          style={{ flex: 1, height: 60, borderRadius: 20, background: "#F0EBF8", color: "#6B3FA0", border: "2px solid #D0B8F5", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}
+          style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "#F0EBF8", color: "#6B3FA0", border: "2px solid #D0B8F5", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}
         >
           <FaArrowLeft style={{ color: "currentColor", marginRight: 8 }} /> Edit Post
         </button>
         <button
           onClick={handlePost}
-          style={{ flex: 2, height: 60, borderRadius: 20, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 18, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 6px 20px rgba(107,63,160,0.3)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+          style={{ flex: 2, height: sz.height, borderRadius: sz.borderRadius, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 6px 20px rgba(107,63,160,0.3)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
         >
           <FaRocket /> POST NOW
         </button>

@@ -1,6 +1,8 @@
 import { FaArrowLeft, FaUniversalAccess, FaChevronRight } from "react-icons/fa";
+import { useSizeContext } from "../context/SizeContext";
 
 export default function SettingsScreen({ onBack, onButtonSize, onSafeInteraction, onConfirmation, onUndo }) {
+  const { sz } = useSizeContext();
   const items = [
     { label: "Button Size", color: "#E8E0F8", textColor: "#2D1B69", onClick: onButtonSize },
     { label: "Safe Interaction Mode", color: "#F5C8A0", textColor: "#2D1B69", onClick: onSafeInteraction },
@@ -26,10 +28,10 @@ export default function SettingsScreen({ onBack, onButtonSize, onSafeInteraction
 
         {items.map(item => (
           <button key={item.label} onClick={item.onClick}
-            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: item.color, border: "none", borderRadius: 22, padding: "20px 22px", cursor: "pointer", width: "100%", transition: "transform 0.12s" }}
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: item.color, border: "none", borderRadius: sz.borderRadius, padding: sz.settingPadding, cursor: "pointer", width: "100%", minHeight: sz.height, transition: "transform 0.12s" }}
             onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
             onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}>
-            <span style={{ fontSize: 19, fontWeight: 700, color: item.textColor, fontFamily: "system-ui, sans-serif", textAlign: "left" }}>{item.label}</span>
+            <span style={{ fontSize: sz.fontSize, fontWeight: 700, color: item.textColor, fontFamily: "system-ui, sans-serif", textAlign: "left" }}>{item.label}</span>
             <span style={{ fontSize: 22, color: "#6B3FA0", fontWeight: 700 }}><FaChevronRight style={{ color: "currentColor" }} /></span>
           </button>
         ))}

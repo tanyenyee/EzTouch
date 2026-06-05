@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { FaHands, FaPaw, FaSun, FaHeart, FaMobileAlt, FaPalette, FaArrowLeft, FaSearch, FaUsers, FaCheck, FaGlassCheers } from "react-icons/fa";
+import { useSizeContext } from "../context/SizeContext";
 import { useState, useEffect } from "react";
 import { FaHands, FaPaw, FaSun, FaHeart, FaMobileAlt, FaPalette, FaArrowLeft, FaSearch, FaUsers, FaCheck, FaGlassCheers, FaPlus, FaUndo } from "react-icons/fa";
 import { useToast } from "../components/ToastProvider";
@@ -44,6 +47,8 @@ const GROUPS = [
   },
 ];
 
+export default function JoinGroupScreen({ onBack, onJoinedGroup }) {
+  const { sz } = useSizeContext();
 export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = [], onCreateGroup }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
@@ -211,9 +216,9 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
             <button
               onClick={() => !joinedIds.has(group.id) && setConfirmGroup(group)}
               style={{
-                width: "100%", height: 52, borderRadius: 16, border: "none",
+                width: "100%", height: sz.height, borderRadius: sz.borderRadius, border: "none",
                 cursor: joinedIds.has(group.id) ? "default" : "pointer",
-                marginTop: 14, fontSize: 16, fontWeight: 700,
+                marginTop: 14, fontSize: sz.fontSize, fontWeight: 700,
                 fontFamily: "system-ui, sans-serif",
                 background: joinedIds.has(group.id)
                   ? "#D4F5D4"
@@ -278,13 +283,13 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <button
                 onClick={handleJoin}
-                style={{ width: "100%", height: 60, borderRadius: 20, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 19, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 16px rgba(107,63,160,0.3)" }}
+                style={{ width: "100%", height: sz.height, borderRadius: sz.borderRadius, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 16px rgba(107,63,160,0.3)" }}
               >
                 <><FaCheck /> Yes, Join Group</>
               </button>
               <button
                 onClick={() => setConfirmGroup(null)}
-                style={{ width: "100%", height: 60, borderRadius: 20, background: "white", color: "#666", border: "2px solid #E8E0F8", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}
+                style={{ width: "100%", height: sz.height, borderRadius: sz.borderRadius, background: "white", color: "#666", border: "2px solid #E8E0F8", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}
               >
                 Cancel
               </button>
@@ -314,6 +319,8 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
             </p>
             <div style={{ display: "flex", gap: 12 }}>
               <button
+                onClick={() => setJoinedGroup(null)}
+                style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "#F0EBF8", color: "#6B3FA0", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}
                 onClick={undoJoin}
                 style={{ flex: 1, height: 56, borderRadius: 18, background: "#FFF5F5", color: "#E83030", border: "2px solid #E83030", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
               >
@@ -326,6 +333,8 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
                 Browse More
               </button>
               <button
+                onClick={() => { setJoinedGroup(null); onBack(); }}
+                style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}
                 onClick={() => confirmJoin(joinedGroup, true)}
                 style={{ flex: 1, height: 56, borderRadius: 18, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}
               >

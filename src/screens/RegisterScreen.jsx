@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaUser, FaEnvelope, FaLock, FaCheck } from "react-icons/fa";
+import { useSizeContext } from "../context/SizeContext";
 import { useToast } from "../components/ToastProvider";
 
 const inputStyle = {
@@ -54,6 +55,7 @@ const Field = ({ label, icon, type = "text", placeholder, value, onChange, focus
 );
 
 export default function RegisterScreen({ onSignUp, onBack }) {
+  const { sz } = useSizeContext();
   const [form, setForm] = useState({ username: "", email: "", password: "", confirm: "" });
   const [focused, setFocused] = useState("");
   const [agreed, setAgreed] = useState(false);
@@ -230,11 +232,11 @@ export default function RegisterScreen({ onSignUp, onBack }) {
           onClick={handleSignUp}
           style={{
             width: "100%",
-            height: 64,
-            borderRadius: 18,
+            height: sz.height,
+            borderRadius: sz.borderRadius,
             background: "linear-gradient(135deg, #6B3FA0, #8B5CC8)",
             color: "white",
-            fontSize: 20,
+            fontSize: sz.fontSize,
             fontWeight: 700,
             border: "none",
             cursor: "pointer",
@@ -254,11 +256,11 @@ export default function RegisterScreen({ onSignUp, onBack }) {
           onClick={onBack}
           style={{
             width: "100%",
-            height: 64,
-            borderRadius: 18,
+            height: sz.height,
+            borderRadius: sz.borderRadius,
             background: "white",
             color: "#6B3FA0",
-            fontSize: 20,
+            fontSize: sz.fontSize,
             fontWeight: 700,
             border: "2px solid #D0B8F5",
             cursor: "pointer",

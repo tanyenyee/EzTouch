@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { FaArrowLeft, FaUser, FaUserPlus, FaPlus } from "react-icons/fa";
+import { useSizeContext } from "../context/SizeContext";
 import { useToast } from "../components/ToastProvider";
 
 export default function AddContactScreen({ onBack, onAdded }) {
+  const { sz } = useSizeContext();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
@@ -53,6 +55,8 @@ export default function AddContactScreen({ onBack, onAdded }) {
           style={{ ...inputStyle("phone"), marginBottom: 36 }} />
 
         {/* Add Contact button */}
+        <button onClick={() => { if (name && phone) setShowConfirm(true); else alert("Please fill in all fields."); }}
+          style={{ width: "100%", height: sz.height, borderRadius: sz.borderRadius, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 14, boxShadow: "0 6px 20px rgba(107,63,160,0.3)" }}>
         <button onClick={() => { if (name && phone) setShowConfirm(true); else addToast("Please fill in all fields.", "warning"); }}
           style={{ width: "100%", height: 62, borderRadius: 18, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 18, fontWeight: 700, fontFamily: "system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 14, boxShadow: "0 6px 20px rgba(107,63,160,0.3)" }}>
           <span style={{ fontSize: 22, color: "#6B3FA0" }}><FaUserPlus style={{ color: "currentColor" }} /></span> Add Contact
@@ -60,7 +64,7 @@ export default function AddContactScreen({ onBack, onAdded }) {
 
         {/* Cancel button */}
         <button onClick={onBack}
-          style={{ width: "100%", height: 62, borderRadius: 18, background: "white", color: "#6B3FA0", border: "2px solid #D0B8F5", cursor: "pointer", fontSize: 18, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>
+          style={{ width: "100%", height: sz.height, borderRadius: sz.borderRadius, background: "white", color: "#6B3FA0", border: "2px solid #D0B8F5", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>
           Cancel
         </button>
       </div>
@@ -72,7 +76,7 @@ export default function AddContactScreen({ onBack, onAdded }) {
             <p style={{ fontSize: 19, fontWeight: 700, color: "#2D1B69", marginBottom: 8, fontFamily: "system-ui, sans-serif" }}>Add new contact</p>
             <p style={{ fontSize: 15, color: "#666", marginBottom: 24, fontFamily: "system-ui, sans-serif" }}>Add <strong>{name}</strong> to your contacts?</p>
             <div style={{ display: "flex", gap: 12 }}>
-              <button aria-label="Cancel add contact" onClick={() => setShowConfirm(false)} style={{ flex: 1, height: 52, borderRadius: 14, background: "#888", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>CANCEL</button>
+              <button aria-label="Cancel add contact" onClick={() => setShowConfirm(false)} style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "#888", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>CANCEL</button>
               <button aria-label="Confirm add contact" ref={yesRef} onClick={() => {
                 const newContact = {
                   id: Date.now(),
@@ -84,7 +88,7 @@ export default function AddContactScreen({ onBack, onAdded }) {
                 };
                 setShowConfirm(false);
                 onAdded && onAdded(newContact);
-              }} style={{ flex: 1, height: 52, borderRadius: 14, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>YES</button>
+              }} style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>YES</button>
             </div>
           </div>
         </div>

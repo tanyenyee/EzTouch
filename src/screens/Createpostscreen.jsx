@@ -1,8 +1,10 @@
 import { useState, useRef } from "react";
 import { FaArrowLeft, FaUser, FaSmile, FaDumbbell, FaPray, FaFrown, FaHeart, FaMicrophone, FaCircle, FaImage, FaClipboard } from "react-icons/fa";
+import { useSizeContext } from "../context/SizeContext";
 import { useToast } from "../components/ToastProvider";
 
 export default function CreatePostScreen({ onBack, onNext }) {
+  const { sz } = useSizeContext();
   const [text, setText] = useState("");
   const [mood, setMood] = useState(null);
   const [recording, setRecording] = useState(false);
@@ -186,12 +188,12 @@ export default function CreatePostScreen({ onBack, onNext }) {
         <button
           onClick={handleNext}
           style={{
-            width: "100%", height: 64, borderRadius: 22,
+            width: "100%", height: sz.height, borderRadius: sz.borderRadius,
             background: (text.trim() || image)
               ? "linear-gradient(135deg,#6B3FA0,#8B5CC8)"
               : "#D0C8E8",
             color: "white", border: "none", cursor: (text.trim() || image) ? "pointer" : "default",
-            fontSize: 20, fontWeight: 700, fontFamily: "system-ui, sans-serif",
+            fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif",
             boxShadow: (text.trim() || image) ? "0 6px 20px rgba(107,63,160,0.3)" : "none",
             transition: "all 0.3s",
           }}
@@ -219,11 +221,11 @@ export default function CreatePostScreen({ onBack, onNext }) {
             <div style={{ display: "flex", gap: 14 }}>
               <button
                 onClick={() => setShowConfirm(false)}
-                style={{ flex: 1, height: 56, borderRadius: 18, background: "#F5F5F5", color: "#666", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}
+                style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "#F5F5F5", color: "#666", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}
               >Edit More</button>
               <button
                 onClick={() => { setShowConfirm(false); onNext && onNext(text, image); }}
-                style={{ flex: 1, height: 56, borderRadius: 18, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}
+                style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}
               >Continue</button>
             </div>
           </div>

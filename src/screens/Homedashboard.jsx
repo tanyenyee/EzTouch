@@ -1,4 +1,5 @@
 import { FaComments, FaHandsHelping, FaUser, FaCog, FaHandPaper } from "react-icons/fa";
+import { useSizeContext } from "../context/SizeContext";
 
 export default function HomeDashboard({
   onChat,
@@ -6,6 +7,7 @@ export default function HomeDashboard({
   onProfile,
   onSettings,
 }) {
+  const { sz } = useSizeContext();
   const tiles = [
     {
       label: "Open Chat",
@@ -104,11 +106,11 @@ export default function HomeDashboard({
       <div
         style={{
           flex: 1,
+          overflowY: "auto",
           padding: "20px 28px 40px",
           display: "flex",
           flexDirection: "column",
           gap: 24,
-          justifyContent: "space-evenly",
         }}
       >
         {tiles.map((tile) => (
@@ -123,8 +125,8 @@ export default function HomeDashboard({
               background: tile.color,
               border: "none",
               borderRadius: 28,
-              padding: "24px 28px",
-              minHeight: 105,
+              padding: sz.tilePadding,
+              minHeight: sz.tileMinHeight,
               cursor: "pointer",
               width: "100%",
               boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
@@ -153,14 +155,14 @@ export default function HomeDashboard({
           >
             <div
               style={{
-                width: 72,
-                height: 72,
-                borderRadius: 36,
+                width: sz.tileIconSize,
+                height: sz.tileIconSize,
+                borderRadius: sz.tileIconSize / 2,
                 background: tile.iconBg,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 34,
+                fontSize: sz.tileIconFont,
                 flexShrink: 0,
                 color: "white",
               }}
@@ -170,7 +172,7 @@ export default function HomeDashboard({
 
             <span
               style={{
-                fontSize: 26,
+                fontSize: sz.tileLabelSize,
                 fontWeight: 700,
                 color: "#2D1B69",
                 fontFamily: "system-ui, sans-serif",

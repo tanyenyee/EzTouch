@@ -1,4 +1,5 @@
 import { FaArrowLeft, FaUser, FaPlus } from "react-icons/fa";
+import { useSizeContext } from "../context/SizeContext";
 
 // 📝 Added manual mock preview strings to each data profile
 const defaultContacts = {
@@ -12,7 +13,7 @@ const defaultContacts = {
   ],
 };
 
-function ContactRow({ contact, onClick }) {
+function ContactRow({ contact, onClick, sz }) {
   return (
     <button
       aria-label={`Open chat with ${contact.name}`}
@@ -23,11 +24,12 @@ function ContactRow({ contact, onClick }) {
         gap: 16,
         background: "#E8E0F8",
         border: "none",
-        borderRadius: 20,
-        padding: "14px 18px",
+        borderRadius: sz.borderRadius,
+        padding: "10px 18px",
         width: "100%",
         cursor: "pointer",
         marginBottom: 12,
+        minHeight: sz.height,
         position: "relative",
         transition: "transform 0.12s",
       }}
@@ -36,15 +38,15 @@ function ContactRow({ contact, onClick }) {
     >
       {/* Avatar Container */}
       <div style={{
-        width: 54,
-        height: 54,
-        borderRadius: 27,
+        width: sz.avatarSize,
+        height: sz.avatarSize,
+        borderRadius: sz.avatarSize / 2,
         background: contact.color,
         color: "white",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: 26,
+        fontSize: sz.avatarFont,
         flexShrink: 0,
         position: "relative",
       }}>
@@ -72,6 +74,14 @@ function ContactRow({ contact, onClick }) {
         )}
       </div>
 
+      <span style={{
+        fontSize: sz.fontSize,
+        fontWeight: 600,
+        color: "#2D1B69",
+        fontFamily: "system-ui, sans-serif",
+      }}>
+        {contact.name}
+      </span>
       {/* 🛠️ Stacks Name and Message text fields vertically */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 4, overflow: "hidden" }}>
         <span style={{
@@ -103,6 +113,7 @@ function ContactRow({ contact, onClick }) {
 }
 
 export default function ChatList({ onBack, onOpenChat, contacts = defaultContacts, onAddContact }) {
+  const { sz } = useSizeContext();
   return (
     <div style={{
       width: "100%",
@@ -154,7 +165,7 @@ export default function ChatList({ onBack, onOpenChat, contacts = defaultContact
           fontFamily: "system-ui, sans-serif",
         }}>Recent</h2>
         {contacts.recent.map(c => (
-          <ContactRow key={c.id} contact={c} onClick={onOpenChat} />
+          <ContactRow key={c.id} contact={c} onClick={onOpenChat} sz={sz} />
         ))}
 
         {/* Others */}
@@ -166,7 +177,7 @@ export default function ChatList({ onBack, onOpenChat, contacts = defaultContact
           fontFamily: "system-ui, sans-serif",
         }}>Others</h2>
         {contacts.others.map(c => (
-          <ContactRow key={c.id} contact={c} onClick={onOpenChat} />
+          <ContactRow key={c.id} contact={c} onClick={onOpenChat} sz={sz} />
         ))}
       </div>
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSizeContext } from "../context/SizeContext";
 import { FaArrowLeft, FaHandPaper, FaFlask, FaCheck } from "react-icons/fa";
 
 function Toggle({ value, onChange }) {
@@ -34,16 +35,37 @@ function RadioRow({ label, selected, onSelect, color }) {
 }
 
 export default function SafeInteractionScreen({ onBack }) {
-  const [master, setMaster] = useState(true);
-  const [features, setFeatures] = useState({ disableOneTap: true, longPress: false, preventRapid: true, touchDelay: true });
-  const [style, setStyle] = useState("Normal Touch");
+ const {
+  safeMode,
+  setSafeMode,
 
-  const toggle = key => val => setFeatures(f => ({ ...f, [key]: val }));
+  preventRapidTaps,
+  setPreventRapidTaps,
 
+  disableOneTap,
+  setDisableOneTap,
+
+  longPressMode,
+  setLongPressMode,
+
+  doubleTapMode,
+  setDoubleTapMode,
+
+  touchDelay,
+  setTouchDelay,
+
+} = useSizeContext();
+
+const style =
+  longPressMode
+    ? "Long Press"
+    : doubleTapMode
+    ? "Double Press"
+    : "Normal Touch";
   const styles = [
-    { label: "Normal Touch", color: "#F0EBFF" },
-    { label: "Long Press", color: "#FFE8D8" },
-    { label: "Double Press", color: "#D8F5E8" },
+    { label: "Normal Touch", color: "#F5C4A0" },
+    { label: "Long Press", color: "#F5A8B8" },
+    { label: "Double Press", color: "#D0C8F0" },
   ];
 
   return (
@@ -69,24 +91,54 @@ export default function SafeInteractionScreen({ onBack }) {
             <p style={{ fontSize: 17, fontWeight: 700, color: "#2D1B69", margin: "0 0 3px", fontFamily: "system-ui, sans-serif" }}>Safe Interaction mode</p>
             <p style={{ fontSize: 12, color: "#888", margin: 0, fontFamily: "system-ui, sans-serif" }}>Master switch for all protection features</p>
           </div>
-          <Toggle value={master} onChange={setMaster} />
+          <Toggle value={safeMode} onChange={setSafeMode} />
         </div>
 
-        {master && (
+        {safeMode && (
           <>
             <p style={{ fontSize: 14, fontWeight: 700, color: "#2D1B69", margin: "0 0 10px", fontFamily: "system-ui, sans-serif" }}>Protection Features:</p>
-            <SettingRow label="Disabled One-Tap Reaction" value={features.disableOneTap} onChange={toggle("disableOneTap")} color="#E8E0F8"
+            <SettingRow label="Disabled One-Tap Reaction" value={disableOneTap} onChange={setDisableOneTap} color="#F5C4A0"
               desc="Prevents reacting to posts with a single tap — requires hold or double tap instead." />
-            <SettingRow label="Require Long Press for Reactions" value={features.longPress} onChange={toggle("longPress")} color="#FFE8D8"
-              desc="You must hold down for 1 second before a reaction is registered." />
-            <SettingRow label="Prevent Rapid Multiple Taps" value={features.preventRapid} onChange={toggle("preventRapid")} color="#E8E0F8"
-              desc="Ignores repeated taps within 0.5 seconds — stops double-send accidents." />
-            <SettingRow label="Touch Delay Protection" value={features.touchDelay} onChange={toggle("touchDelay")} color="#D8F5E8"
-              desc="Adds a short delay before any action registers, giving you time to lift your finger." />
+            <SettingRow label="Require Long Press for Reactions" value={longPressMode}
+onChange={(val) => {
+  setLongPressMode(val);
 
+  if (val) {
+    setDoubleTapMode(false);
+  }
+}} color="#F5A8B8"
+              desc="You must hold down for 1 second before a reaction is registered." />
+            <SettingRow label="Prevent Rapid Multiple Taps" value={preventRapidTaps} onChange={setPreventRapidTaps} color="#A8D8EE"
+              desc="Ignores repeated taps within 0.5 seconds — stops double-send accidents." />
+            <SettingRow
+  label="Touch Delay Protection"
+  value={touchDelay}
+  onChange={setTouchDelay}
+  color="#A0D8C8"
+  desc="Adds a short delay before any action registers, giving you time to lift your finger."
+/>
             <p style={{ fontSize: 14, fontWeight: 700, color: "#2D1B69", margin: "16px 0 10px", fontFamily: "system-ui, sans-serif" }}>Interaction Style:</p>
             {styles.map(s => (
-              <RadioRow key={s.label} label={s.label} selected={style === s.label} onSelect={() => setStyle(s.label)} color={s.color} />
+              <RadioRow key={s.label} label={s.label} selected={style === s.label} onSelect={() => {
+
+  if (s.label === "Normal Touch") {
+    setLongPressMode(false);
+    setDoubleTapMode(false);
+  }
+
+  if (s.label === "Long Press") {
+     setLongPressMode(true);
+  setDoubleTapMode(false);
+  setTouchDelay(false);
+  }
+
+  if (s.label === "Double Press") {
+    setLongPressMode(false);
+    setDoubleTapMode(true);
+    setTouchDelay(false);
+
+  }
+}} color={s.color} />
             ))}
 
             {/* Demo box */}

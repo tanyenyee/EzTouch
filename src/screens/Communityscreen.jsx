@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { FaArrowLeft, FaGlobeAmericas, FaUsers, FaHeart, FaRegHeart, FaComment, FaShare, FaUser, FaPaperPlane, FaChevronRight, FaPlus, FaArrowRight, FaCheckCircle } from "react-icons/fa";
+import { useSizeContext } from "../context/SizeContext";
+import SafeButton from "../components/SafeButton";
 
 export const initPosts = [
   {
@@ -55,6 +57,7 @@ const SHARE_CONTACTS = [
 ];
 
 export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onOpenGroup, defaultTab = "discover", myGroups = [], posts, setPosts }) {
+  const { sz } = useSizeContext();
   const [tab, setTab] = useState(defaultTab);
   const [liked, setLiked] = useState({});
   const [commenting, setCommenting] = useState(null); // post id showing comment section
@@ -110,11 +113,11 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
       <div style={{ display: "flex", gap: 12, padding: "14px 20px", background: "white", borderBottom: "1px solid #E8E0F8", flexShrink: 0 }}>
         {["discover", "mygroup"].map(t => (
           <button key={t} onClick={() => setTab(t)} style={{
-            flex: 1, height: 48, borderRadius: 24,
+            flex: 1, height: sz.height, borderRadius: sz.borderRadius,
             background: tab === t ? "linear-gradient(135deg,#6B3FA0,#8B5CC8)" : "transparent",
             color: tab === t ? "white" : "#6B3FA0",
             border: tab === t ? "none" : "2px solid #6B3FA0",
-            fontSize: 16, fontWeight: 700, cursor: "pointer",
+            fontSize: sz.fontSize, fontWeight: 700, cursor: "pointer",
             fontFamily: "system-ui, sans-serif", transition: "all 0.2s",
             boxShadow: tab === t ? "0 4px 12px rgba(107,63,160,0.25)" : "none",
             display: "flex", alignItems: "center", justifyContent: "center", gap: "8px"
@@ -159,7 +162,8 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
               {/* Action buttons — Like | Comment | Share (3 only) */}
               <div style={{ display: "flex", gap: 8 }}>
                 {/* Like */}
-                <button
+                <SafeButton
+                  confirmationFor="like"
                   aria-label={liked[post.id] ? "Unlike post" : "Like post"}
                   onClick={() => toggleLike(post.id)}
                   style={{
@@ -171,10 +175,11 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
                 >
                   <span style={{ fontSize: 18, display: "flex" }}>{liked[post.id] ? <FaHeart color="#E83030" /> : <FaRegHeart color="#888" />}</span>
                   <span style={{ fontSize: 14, fontWeight: 700, color: liked[post.id] ? "#6B3FA0" : "#888", fontFamily: "system-ui, sans-serif" }}>{post.likes}</span>
-                </button>
+                </SafeButton>
 
                 {/* Comment */}
-                <button
+                <SafeButton
+                  confirmationFor="like"
                   aria-label="Comment on post"
                   onClick={() => { setCommenting(commenting === post.id ? null : post.id); setCommentText(""); }}
                   style={{
@@ -188,7 +193,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
                   <span style={{ fontSize: 14, fontWeight: 700, color: commenting === post.id ? "#6B3FA0" : "#888", fontFamily: "system-ui, sans-serif" }}>
                     {(post.commentsList || []).length}
                   </span>
-                </button>
+                 </SafeButton>
 
                 {/* Share */}
                 <button
@@ -260,8 +265,8 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
               onClick={() => onOpenGroup && onOpenGroup(group)}
               style={{
                 display: "flex", alignItems: "center", gap: 16,
-                background: "white", border: "none", borderRadius: 24,
-                padding: "16px 18px", width: "100%", cursor: "pointer",
+                background: "white", border: "none", borderRadius: sz.borderRadius,
+                padding: sz.settingPadding, width: "100%", cursor: "pointer",
                 marginBottom: 12, position: "relative", textAlign: "left",
                 boxShadow: "0 2px 10px rgba(107,63,160,0.08)",
                 transition: "transform 0.12s",
@@ -271,7 +276,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
               onTouchStart={e => e.currentTarget.style.transform = "scale(0.98)"}
               onTouchEnd={e => e.currentTarget.style.transform = "scale(1)"}
             >
-              <div style={{ width: 58, height: 58, borderRadius: 29, background: group.color + "33", border: `2px solid ${group.color}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0, position: "relative", color: group.color }}>
+              <div style={{ width: sz.avatarSize, height: sz.avatarSize, borderRadius: sz.avatarSize / 2, background: group.color + "33", border: `2px solid ${group.color}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: sz.avatarFont, flexShrink: 0, position: "relative", color: group.color }}>
                 {group.avatar}
                 {group.unread > 0 && (
                   <div style={{ position: "absolute", top: -5, right: -5, minWidth: 24, height: 24, borderRadius: 12, background: "#E83030", color: "white", fontSize: 11, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid white", fontFamily: "system-ui, sans-serif", padding: "0 4px" }}>
@@ -342,7 +347,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
                   onClick={() => shareToContact(contact)}
                   style={{
                     display: "flex", alignItems: "center", gap: 14,
-                    background: "#F8F7FF", border: "2px solid #E8E0F8", borderRadius: 20,
+                    background: "#F8F7FF", border: "2px solid #E8E0F8", borderRadius: sz.borderRadius,
                     padding: "12px 16px", cursor: "pointer", width: "100%", textAlign: "left",
                     transition: "all 0.15s",
                   }}
@@ -352,7 +357,7 @@ export default function CommunityScreen({ onBack, onCreatePost, onJoinGroup, onO
                   <div style={{ width: 46, height: 46, borderRadius: 23, background: contact.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0, color: "white" }}>
                     {contact.avatar}
                   </div>
-                  <span style={{ fontSize: 17, fontWeight: 700, color: "#2D1B69", fontFamily: "system-ui, sans-serif", flex: 1 }}>{contact.name}</span>
+                  <span style={{ fontSize: sz.fontSize, fontWeight: 700, color: "#2D1B69", fontFamily: "system-ui, sans-serif", flex: 1 }}>{contact.name}</span>
                   <span style={{ fontSize: 13, fontWeight: 600, color: "#6B3FA0", fontFamily: "system-ui, sans-serif", display: "flex", alignItems: "center", gap: "6px" }}>Send <FaArrowRight /></span>
                 </button>
               ))}

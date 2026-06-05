@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaArrowLeft, FaLightbulb, FaCheck } from "react-icons/fa";
+import { useSizeContext } from "../context/SizeContext";
 
 const sizes = [
   { label: "Small", desc: "Standard size for users with good finger control", fontSize: 15, inputH: 48, btnH: 48 },
@@ -7,8 +8,9 @@ const sizes = [
   { label: "Large", desc: "Maximum size — best for tremors & limited movement", fontSize: 20, inputH: 66, btnH: 66 },
 ];
 
-export default function ButtonSizeScreen({ onBack, currentSize = "Large", onSave }) {
-  const [selected, setSelected] = useState(currentSize);
+export default function ButtonSizeScreen({ onBack }) {
+  const { size: currentSize, sz, setSize } = useSizeContext();
+  const [selected, setSelected] = useState(currentSize || "Medium");
 
   const demo = sizes.find(s => s.label === selected);
 
@@ -60,9 +62,9 @@ export default function ButtonSizeScreen({ onBack, currentSize = "Large", onSave
 
         {/* Cancel / Save */}
         <div style={{ display: "flex", gap: 14 }}>
-          <button onClick={onBack} style={{ flex: 1, height: 58, borderRadius: 16, background: "#888", color: "white", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>CANCEL</button>
-          <button onClick={() => { onSave && onSave(selected); onBack(); }}
-            style={{ flex: 1, height: 58, borderRadius: 16, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}>SAVE</button>
+          <button onClick={onBack} style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "#888", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>CANCEL</button>
+          <button onClick={() => { setSize(selected); onBack(); }}
+            style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}>SAVE</button>
         </div>
       </div>
     </div>
