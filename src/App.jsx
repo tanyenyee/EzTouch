@@ -131,7 +131,7 @@ export default function App() {
         {screen === "joingroup" && <JoinGroupScreen 
           customGroups={customGroups}
           onBack={() => { setCommunityTab("mygroup"); go("community"); }} 
-          onJoinedGroup={(group) => { setMyGroups(prev => [...prev, { ...group, isNew: true }]); setCommunityTab("mygroup"); go("community"); }} 
+          onJoinedGroup={(group, navigate = true) => { setMyGroups(prev => [...prev, { ...group, isNew: true }]); if (navigate) { setCommunityTab("mygroup"); go("community"); } }} 
           onCreateGroup={(group) => { 
             setCustomGroups(prev => [...prev, group]); 
             setMyGroups(prev => [...prev, { ...group, unread: 0, avatar: group.icon, isNew: true, isCreator: true }]); 

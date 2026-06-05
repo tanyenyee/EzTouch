@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaHands, FaPaw, FaSun, FaHeart, FaMobileAlt, FaPalette, FaArrowLeft, FaSearch, FaUsers, FaCheck, FaGlassCheers, FaPlus } from "react-icons/fa";
+import { FaHands, FaPaw, FaSun, FaHeart, FaMobileAlt, FaPalette, FaArrowLeft, FaSearch, FaUsers, FaCheck, FaGlassCheers, FaPlus, FaUndo } from "react-icons/fa";
 
 const CATEGORIES = ["All", "Health", "Pets", "Daily Life", "Support", "Hobbies", "Education"];
 const FORM_CATEGORIES = ["Health", "Pets", "Daily Life", "Support", "Hobbies", "Education"];
@@ -49,6 +49,17 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
   const [confirmGroup, setConfirmGroup] = useState(null);
   const [joinedGroup, setJoinedGroup] = useState(null);
   const [joinedIds, setJoinedIds] = useState(new Set());
+  const [timeLeft, setTimeLeft] = useState(0);
+
+  useEffect(() => {
+    let timer;
+    if (joinedGroup && timeLeft > 0) {
+      timer = setTimeout(() => setTimeLeft(prev => prev - 1), 1000);
+    } else if (joinedGroup && timeLeft === 0) {
+      confirmJoin(joinedGroup, true);
+    }
+    return () => clearTimeout(timer);
+  }, [joinedGroup, timeLeft]);
 
   // Creation State
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -67,12 +78,21 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
   });
 
   const handleJoin = () => {
-    setJoinedIds(prev => new Set([...prev, confirmGroup.id]));
     setJoinedGroup(confirmGroup);
-    if (onJoinedGroup) {
-      onJoinedGroup({ ...confirmGroup, unread: 0, avatar: confirmGroup.icon });
-    }
+    setTimeLeft(30);
     setConfirmGroup(null);
+  };
+
+  const confirmJoin = (group, navigate = true) => {
+    setJoinedIds(prev => new Set([...prev, group.id]));
+    setJoinedGroup(null);
+    if (onJoinedGroup) {
+      onJoinedGroup({ ...group, unread: 0, avatar: group.icon }, navigate);
+    }
+  };
+
+  const undoJoin = () => {
+    setJoinedGroup(null);
   };
 
   const handleCreate = () => {
@@ -291,15 +311,24 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
             <p style={{ fontSize: 14, color: "#888", marginBottom: 28, fontFamily: "system-ui, sans-serif", lineHeight: 1.6 }}>
               You can now read messages and chat with {joinedGroup.members} members!
             </p>
+            <p style={{ fontSize: 13, color: "#E87030", textAlign: "center", fontFamily: "system-ui, sans-serif", margin: "0 0 16px" }}>
+              <FaUndo style={{ color: "currentColor", marginRight: 6 }} />Undo available for {timeLeft}s
+            </p>
             <div style={{ display: "flex", gap: 12 }}>
               <button
-                onClick={() => setJoinedGroup(null)}
+                onClick={undoJoin}
+                style={{ flex: 1, height: 56, borderRadius: 18, background: "#FFF5F5", color: "#E83030", border: "2px solid #E83030", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+              >
+                <FaUndo /> Undo
+              </button>
+              <button
+                onClick={() => confirmJoin(joinedGroup, false)}
                 style={{ flex: 1, height: 56, borderRadius: 18, background: "#F0EBF8", color: "#6B3FA0", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}
               >
                 Browse More
               </button>
               <button
-                onClick={() => { setJoinedGroup(null); onBack(); }}
+                onClick={() => confirmJoin(joinedGroup, true)}
                 style={{ flex: 1, height: 56, borderRadius: 18, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}
               >
                 Go to Groups
