@@ -55,8 +55,6 @@ export default function AddContactScreen({ onBack, onAdded }) {
           style={{ ...inputStyle("phone"), marginBottom: 36 }} />
 
         {/* Add Contact button */}
-        <button onClick={() => { if (name && phone) setShowConfirm(true); else alert("Please fill in all fields."); }}
-          style={{ width: "100%", height: sz.height, borderRadius: sz.borderRadius, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 14, boxShadow: "0 6px 20px rgba(107,63,160,0.3)" }}>
         <button onClick={() => { if (name && phone) setShowConfirm(true); else addToast("Please fill in all fields.", "warning"); }}
           style={{ width: "100%", height: 62, borderRadius: 18, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 18, fontWeight: 700, fontFamily: "system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 14, boxShadow: "0 6px 20px rgba(107,63,160,0.3)" }}>
           <span style={{ fontSize: 22, color: "#6B3FA0" }}><FaUserPlus style={{ color: "currentColor" }} /></span> Add Contact

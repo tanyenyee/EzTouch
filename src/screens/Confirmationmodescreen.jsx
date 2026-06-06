@@ -36,7 +36,6 @@ export default function ConfirmationModeScreen({ onBack }) {
   const [showDemo, setShowDemo] = useState(false);
   const { addToast } = useToast();
 
-  const [showDemo, setShowDemo] = useState(false);
   const demoHoldTimer = useRef(null);
   const tapResetTimer = useRef(null);
   const demoTapRef = useRef(0);

@@ -35,9 +35,8 @@ const quickReplies = [
   { label: <>Can we talk? <FaComment /></>, rawText: "Can we talk?", color: "#C8A0E8" },
 ];
 
-export default function GroupChatScreen({ group, onBack, onLeaveGroup }) {
-  const { sz } = useSizeContext();
 export default function GroupChatScreen({ group, onBack, onLeaveGroup, onDeleteGroup, onEditGroup }) {
+  const { sz } = useSizeContext();
   const [messages, setMessages] = useState(() => getInitMessages(group));
   const [input, setInput] = useState("");
   const [mode, setMode] = useState("main");
@@ -245,40 +244,51 @@ export default function GroupChatScreen({ group, onBack, onLeaveGroup, onDeleteG
 
       {/* Messages */}
       <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", display: "flex", flexDirection: "column", gap: 12 }}>
-        {/* Date chip */}
-        <div style={{ textAlign: "center" }}>
-          <span style={{ background: "#E8E0F8", borderRadius: 12, padding: "4px 14px", fontSize: 12, color: "#6B3FA0", fontFamily: "system-ui, sans-serif", fontWeight: 600 }}>Today</span>
-        </div>
-
-        {messages.map(msg => (
-          <div key={msg.id} style={{ display: "flex", flexDirection: "column", alignItems: msg.mine ? "flex-end" : "flex-start", width: "100%" }}>
-            {!msg.mine && msg.user && (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                <div style={{ width: 24, height: 24, borderRadius: 12, background: msg.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13 }}>{msg.avatar}</div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: "#6B3FA0", fontFamily: "system-ui, sans-serif" }}>{msg.user}</span>
-              </div>
-            )}
-            <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: msg.mine ? "flex-end" : "flex-start" }}>
-              {msg.mine && msg.id === undoId && (
-                <button
-                  onClick={undoLastMessage}
-                  style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, color: "#6B3FA0", padding: "8px", fontFamily: "system-ui, sans-serif", whiteSpace: "nowrap" }}
-                ><FaUndo /> UNDO</button>
-              )}
-              <div style={{
-                maxWidth: "75%",
-                background: msg.mine ? "linear-gradient(135deg,#6B3FA0,#8B5CC8)" : "white",
-                color: msg.mine ? "white" : "#2D1B69",
-                borderRadius: msg.mine ? "24px 24px 4px 24px" : "24px 24px 24px 4px",
-                padding: "14px 18px", fontSize: 16, fontFamily: "system-ui, sans-serif",
-                lineHeight: 1.5, boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-              }}>
-                {msg.text}
-              </div>
-            </div>
-            <span style={{ fontSize: 11, color: "#BBB", margin: "3px 4px 0", fontFamily: "system-ui, sans-serif", alignSelf: msg.mine ? "flex-end" : "flex-start" }}>{msg.time}</span>
+        {messages.length === 0 ? (
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16, opacity: 0.7 }}>
+            <FaComment style={{ fontSize: 64, color: "#D0B8F5" }} />
+            <p style={{ fontSize: 18, color: "#6B3FA0", fontWeight: 700, fontFamily: "system-ui, sans-serif", textAlign: "center", margin: 0, padding: "0 24px" }}>
+              No messages yet — start the conversation!
+            </p>
           </div>
-        ))}
+        ) : (
+          <>
+            {/* Date chip */}
+            <div style={{ textAlign: "center" }}>
+              <span style={{ background: "#E8E0F8", borderRadius: 12, padding: "4px 14px", fontSize: 12, color: "#6B3FA0", fontFamily: "system-ui, sans-serif", fontWeight: 600 }}>Today</span>
+            </div>
+
+            {messages.map(msg => (
+              <div key={msg.id} style={{ display: "flex", flexDirection: "column", alignItems: msg.mine ? "flex-end" : "flex-start", width: "100%" }}>
+                {!msg.mine && msg.user && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                    <div style={{ width: 24, height: 24, borderRadius: 12, background: msg.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13 }}>{msg.avatar}</div>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "#6B3FA0", fontFamily: "system-ui, sans-serif" }}>{msg.user}</span>
+                  </div>
+                )}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: msg.mine ? "flex-end" : "flex-start" }}>
+                  {msg.mine && msg.id === undoId && (
+                    <button
+                      onClick={undoLastMessage}
+                      style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, color: "#6B3FA0", padding: "8px", fontFamily: "system-ui, sans-serif", whiteSpace: "nowrap" }}
+                    ><FaUndo /> UNDO</button>
+                  )}
+                  <div style={{
+                    maxWidth: "75%",
+                    background: msg.mine ? "linear-gradient(135deg,#6B3FA0,#8B5CC8)" : "white",
+                    color: msg.mine ? "white" : "#2D1B69",
+                    borderRadius: msg.mine ? "24px 24px 4px 24px" : "24px 24px 24px 4px",
+                    padding: "14px 18px", fontSize: 16, fontFamily: "system-ui, sans-serif",
+                    lineHeight: 1.5, boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  }}>
+                    {msg.text}
+                  </div>
+                </div>
+                <span style={{ fontSize: 11, color: "#BBB", margin: "3px 4px 0", fontFamily: "system-ui, sans-serif", alignSelf: msg.mine ? "flex-end" : "flex-start" }}>{msg.time}</span>
+              </div>
+            ))}
+          </>
+        )}
         <div ref={bottomRef} />
       </div>
 

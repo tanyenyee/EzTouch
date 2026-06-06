@@ -1,8 +1,6 @@
-import { useState } from "react";
-import { FaHands, FaPaw, FaSun, FaHeart, FaMobileAlt, FaPalette, FaArrowLeft, FaSearch, FaUsers, FaCheck, FaGlassCheers } from "react-icons/fa";
-import { useSizeContext } from "../context/SizeContext";
 import { useState, useEffect } from "react";
 import { FaHands, FaPaw, FaSun, FaHeart, FaMobileAlt, FaPalette, FaArrowLeft, FaSearch, FaUsers, FaCheck, FaGlassCheers, FaPlus, FaUndo } from "react-icons/fa";
+import { useSizeContext } from "../context/SizeContext";
 import { useToast } from "../components/ToastProvider";
 
 const CATEGORIES = ["All", "Health", "Pets", "Daily Life", "Support", "Hobbies", "Education"];
@@ -45,11 +43,30 @@ const GROUPS = [
     icon: <FaPalette />, desc: "Art, crafts, and creative expression adapted for everyone.",
     members: 19, color: "#E87070", joined: false, category: "Hobbies"
   },
+  {
+    id: 7, name: "Senior Tech Support",
+    icon: <FaMobileAlt />, desc: "Learn how to use your phone, apps, and the internet safely.",
+    members: 24, color: "#A0C8E8", joined: false, category: "Education"
+  },
+  {
+    id: 8, name: "Easy Gardening",
+    icon: <FaSun />, desc: "Tips for growing plants with accessible gardening tools.",
+    members: 9, color: "#A0C8A0", joined: false, category: "Hobbies"
+  },
+  {
+    id: 9, name: "Virtual Coffee Chats",
+    icon: <FaGlassCheers />, desc: "Just a casual place to chat, make friends, and relax.",
+    members: 32, color: "#F5C030", joined: false, category: "Daily Life"
+  },
+  {
+    id: 10, name: "Caregivers Network",
+    icon: <FaUsers />, desc: "A safe space for caregivers to share resources and find support.",
+    members: 41, color: "#C8A0E8", joined: false, category: "Support"
+  },
 ];
 
-export default function JoinGroupScreen({ onBack, onJoinedGroup }) {
+export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = [], onCreateGroup, myGroups = [], onGoToGroup }) {
   const { sz } = useSizeContext();
-export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = [], onCreateGroup }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [confirmGroup, setConfirmGroup] = useState(null);
@@ -63,7 +80,8 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
     if (joinedGroup && timeLeft > 0) {
       timer = setTimeout(() => setTimeLeft(prev => prev - 1), 1000);
     } else if (joinedGroup && timeLeft === 0) {
-      confirmJoin(joinedGroup, true);
+      setJoinedGroup(null);
+      if (onGoToGroup) onGoToGroup(joinedGroup);
     }
     return () => clearTimeout(timer);
   }, [joinedGroup, timeLeft]);
@@ -78,22 +96,21 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
   const allGroups = [...GROUPS, ...customGroups];
 
   const filtered = allGroups.filter(g => {
+    if (myGroups.some(my => my.id === g.id) || joinedIds.has(g.id)) return false;
     const matchesSearch = g.name.toLowerCase().includes(search.toLowerCase()) || g.desc.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = activeCategory === "All" || g.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
 
   const handleJoin = () => {
-    setJoinedGroup(confirmGroup);
+    const groupToJoin = confirmGroup;
+    setJoinedGroup(groupToJoin);
     setTimeLeft(30);
     setConfirmGroup(null);
-  };
-
-  const confirmJoin = (group, navigate = true) => {
-    setJoinedIds(prev => new Set([...prev, group.id]));
-    setJoinedGroup(null);
+    setJoinedIds(prev => new Set([...prev, groupToJoin.id]));
+    addToast("✅ Joined successfully!", "success");
     if (onJoinedGroup) {
-      onJoinedGroup({ ...group, unread: 0, avatar: group.icon }, navigate);
+      onJoinedGroup({ ...groupToJoin, unread: 0, avatar: groupToJoin.icon });
     }
   };
 
@@ -319,23 +336,22 @@ export default function JoinGroupScreen({ onBack, onJoinedGroup, customGroups = 
             </p>
             <div style={{ display: "flex", gap: 12 }}>
               <button
-                onClick={() => setJoinedGroup(null)}
-                style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "#F0EBF8", color: "#6B3FA0", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}
                 onClick={undoJoin}
                 style={{ flex: 1, height: 56, borderRadius: 18, background: "#FFF5F5", color: "#E83030", border: "2px solid #E83030", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
               >
                 <FaUndo /> Undo
               </button>
               <button
-                onClick={() => confirmJoin(joinedGroup, false)}
+                onClick={() => setJoinedGroup(null)}
                 style={{ flex: 1, height: 56, borderRadius: 18, background: "#F0EBF8", color: "#6B3FA0", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}
               >
                 Browse More
               </button>
               <button
-                onClick={() => { setJoinedGroup(null); onBack(); }}
-                style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}
-                onClick={() => confirmJoin(joinedGroup, true)}
+                onClick={() => {
+                  setJoinedGroup(null);
+                  if (onGoToGroup) onGoToGroup(joinedGroup);
+                }}
                 style={{ flex: 1, height: 56, borderRadius: 18, background: "linear-gradient(135deg,#6B3FA0,#8B5CC8)", color: "white", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}
               >
                 Go to Groups

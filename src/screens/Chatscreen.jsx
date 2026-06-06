@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { FaArrowLeft, FaUndo } from "react-icons/fa";
 import { useSizeContext } from "../context/SizeContext";
 import SafeButton from "../components/SafeButton";
-import { FaArrowLeft } from "react-icons/fa";
 import ReactiveKeyboard from "./ReactiveKeyboard";
 import { useToast } from "../components/ToastProvider";
 

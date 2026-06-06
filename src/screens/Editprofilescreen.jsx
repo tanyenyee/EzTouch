@@ -2,12 +2,10 @@ import { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useSizeContext } from "../context/SizeContext";
 
-export default function EditProfileScreen({ onBack, onSaved }) {
-  const { sz } = useSizeContext();
-  const [form, setForm] = useState({ username: "Username", email: "user@example.com", phone: "+123 456 7890", bio: "" });
 import { useToast } from "../components/ToastProvider";
 
 export default function EditProfileScreen({ profile: profileProp, onBack, onSaved }) {
+  const { sz } = useSizeContext();
   const profile = profileProp || {
     username: "Username",
     email: "user@example.com",
@@ -140,8 +138,6 @@ export default function EditProfileScreen({ profile: profileProp, onBack, onSave
           style={{ ...fieldStyle("bio"), height: 100, padding: "12px 16px", resize: "none", lineHeight: 1.4 }} />
 
         <div style={{ display: "flex", gap: 14, marginTop: 8 }}>
-          <button onClick={() => setShowSuccess(true)}
-            style={{ flex: 1, height: sz.height, borderRadius: sz.borderRadius, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}>
           <button onClick={handleSave}
             style={{ flex: 1, height: 58, borderRadius: 16, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 18, fontWeight: 700, fontFamily: "system-ui, sans-serif", boxShadow: "0 4px 14px rgba(107,63,160,0.3)" }}>
             Save
@@ -159,12 +155,6 @@ export default function EditProfileScreen({ profile: profileProp, onBack, onSave
           <div style={{ background: "white", borderRadius: 24, padding: "28px 24px", width: "80%", textAlign: "center", boxShadow: "0 8px 32px rgba(0,0,0,0.2)" }}>
             <p style={{ fontSize: 18, fontWeight: 700, color: "#2D1B69", marginBottom: 6, fontFamily: "system-ui, sans-serif" }}>Profile updated successfully!</p>
             <p style={{ fontSize: 14, color: "#666", marginBottom: 24, fontFamily: "system-ui, sans-serif" }}>Your changes have been saved.</p>
-            <button onClick={() => { setShowSuccess(false); onSaved && onSaved(); }}
-              style={{ width: "100%", height: sz.height, borderRadius: sz.borderRadius, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif", marginBottom: 10 }}>
-              OK
-            </button>
-            <button onClick={() => setShowSuccess(false)}
-              style={{ width: "100%", height: sz.height, borderRadius: sz.borderRadius, background: "#888", color: "white", border: "none", cursor: "pointer", fontSize: sz.fontSize, fontWeight: 700, fontFamily: "system-ui, sans-serif" }}>
             <button onClick={handleOk}
               style={{ width: "100%", height: 52, borderRadius: 14, background: "#6B3FA0", color: "white", border: "none", cursor: "pointer", fontSize: 17, fontWeight: 700, fontFamily: "system-ui, sans-serif", marginBottom: 10 }}>
               OK

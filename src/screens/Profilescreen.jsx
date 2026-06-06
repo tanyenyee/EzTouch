@@ -9,10 +9,8 @@ import {
 } from "react-icons/fa";
 import { useSizeContext } from "../context/SizeContext";
 
-export default function ProfileScreen({ onBack, onEdit }) {
-  const { sz } = useSizeContext();
-  const [profile] = useState({
 export default function ProfileScreen({ profile: profileProp, onBack, onEdit, onLogout }) {
+  const { sz } = useSizeContext();
   const profile = profileProp || {
     username: "Username",
     email: "user@example.com",
